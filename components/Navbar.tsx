@@ -2,9 +2,11 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { brandColors } from "@/constant/theme";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { primary, accent } = brandColors;
 
   const navLinks = [
     { href: '/', label: 'Home' },
@@ -17,11 +19,14 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="bg-background/95 backdrop-blur-md border border-background/30 rounded-full mt-2 shadow-[0_25px_40px_rgba(33,33,33,0.25)]">
+        <div className="bg-transparent backdrop-blur-md border border-background/30 rounded-full mt-6 shadow-[0_25px_40px_rgba(33,33,33,0.25)]">
           <div className="flex items-center justify-between h-16 px-4">
             {/* Logo */}
             <Link href="/" className="flex-shrink-0">
-              <span className="text-2xl font-bold bg-green-800 bg-clip-text text-transparent">
+              <span
+                className="text-2xl font-bold bg-clip-text"
+                style={{ color: primary.DEFAULT }}
+              >
                 Clothly
               </span>
             </Link>
@@ -33,7 +38,17 @@ export default function Navbar() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="px-4 py-2 text-gray-700 font-medium rounded-full transition-all duration-300 hover:text-black hover:bg-purple-100/50 hover:scale-105"
+                    className="px-4 py-2 font-medium rounded-full transition-all duration-300 hover:scale-105"
+                    style={{ color: primary.DEFAULT }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = "black";
+                      e.currentTarget.style.backgroundColor =
+                        "rgba(192, 139, 121, 0.2)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = primary.DEFAULT;
+                      e.currentTarget.style.backgroundColor = "transparent";
+                    }}
                   >
                     {link.label}
                   </Link>
@@ -45,8 +60,9 @@ export default function Navbar() {
             <div className="flex items-center gap-2">
               {/* Search Icon */}
               <button
-                className="p-2 text-gray-500 rounded-lg transition-all duration-300 hover:text-purple-600 hover:bg-purple-100/50"
+                className="p-2 text-gray-500 rounded-lg transition-all duration-300 hover:bg-white/10"
                 aria-label="Search"
+                style={{ color: primary.DEFAULT }}
               >
                 <svg
                   className="w-5 h-5"
@@ -65,8 +81,9 @@ export default function Navbar() {
 
               {/* Cart Icon */}
               <button
-                className="p-2 text-gray-500 rounded-lg transition-all duration-300 hover:text-purple-600 hover:bg-purple-100/50 relative"
+                className="p-2 text-gray-500 rounded-lg transition-all duration-300 hover:bg-white/10 relative"
                 aria-label="Cart"
+                style={{ color: primary.DEFAULT }}
               >
                 <svg
                   className="w-5 h-5"
@@ -81,15 +98,21 @@ export default function Navbar() {
                     d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                   />
                 </svg>
-                <span className="absolute top-1 right-1 bg-linear-to-br from-purple-600 to-pink-600 text-white text-[10px] font-semibold min-w-4 h-4 flex items-center justify-center rounded-lg px-1">
+                <span
+                  className="absolute top-1 right-1 text-white text-[10px] font-semibold min-w-4 h-4 flex items-center justify-center rounded-lg px-1"
+                  style={{
+                    background: `linear-gradient(to bottom right, ${primary.DEFAULT}, ${primary.hover})`,
+                  }}
+                >
                   0
                 </span>
               </button>
 
               {/* User Icon */}
               <button
-                className="p-2 text-gray-500 rounded-lg transition-all duration-300 hover:text-purple-600 hover:bg-purple-100/50"
+                className="p-2 text-gray-500 rounded-lg transition-all duration-300 hover:bg-white/10"
                 aria-label="Account"
+                style={{ color: primary.DEFAULT }}
               >
                 <svg
                   className="w-5 h-5"
@@ -108,9 +131,10 @@ export default function Navbar() {
 
               {/* Mobile menu button */}
               <button
-                className="md:hidden p-2 text-gray-500 rounded-lg transition-all duration-300 hover:text-purple-600 hover:bg-purple-100/50"
+                className="md:hidden p-2 text-gray-500 rounded-lg transition-all duration-300 hover:bg-white/10"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 aria-label="Toggle menu"
+                style={{ color: primary.DEFAULT }}
               >
                 <svg
                   className="w-6 h-6"
@@ -145,7 +169,8 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="block px-4 py-2 text-gray-700 hover:text-purple-600 hover:bg-white/50 rounded-lg transition-all duration-300"
+                  className="block px-4 py-2 text-gray-700 hover:bg-white/50 rounded-lg transition-all duration-300"
+                  style={{ color: primary.DEFAULT }}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {link.label}
@@ -156,5 +181,6 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
-  )
+  );
 }
+

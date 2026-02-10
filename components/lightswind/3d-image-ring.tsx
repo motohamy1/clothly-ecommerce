@@ -222,8 +222,8 @@ const handleDragEnd = () => {
       <div
         style={{
           perspective: `${perspective}px`,
-          width: `${width}px`,
-          height: `${width * 1.13}px`,
+          width: `${width + 100}px`,
+          height: `${width * 1.16}px`,
           position: "absolute",
           left: "50%",
           top: "35%",

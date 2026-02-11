@@ -51,11 +51,11 @@ const categories = [
 function Hero() {
   return (
     <>
-      <section className="min-h-screen pt-28 pb-6 px-4 sm:px-6 lg:px-16">
+      <section className="min-h-screen pt-28 pb-6 px-4 sm:px-6 lg:px-4">
         <div className="mx-auto max-w-full h-[calc(100vh-8rem)]">
           <div className="flex flex-col lg:flex-row gap-5 h-full">
             {/* ===== Left Side — 1/3 ===== */}
-            <div className="w-full lg:w-1/3 flex flex-col gap-4 h-full">
+            <div className="w-full lg:w-1/3 flex flex-col gap-4 h-full bg-background rounded-3xl p-6 md:p-8 shadow-lg">
               {/* Branding Header */}
               <div className="px-2 py-3">
                 <p
@@ -65,8 +65,8 @@ function Hero() {
                   Explore Collections
                 </p>
                 <h1
-                  className="text-2xl lg:text-3xl font-extrabold leading-tight tracking-tight"
-                  style={{ color: "#181d2a" }}
+                  className="text-mencolor text-2xl lg:text-3xl font-extrabold leading-tight tracking-tight"
+                  // style={{ color: "#181d2a" }}
                 >
                   Shop by
                   <br />
@@ -123,7 +123,7 @@ function Hero() {
             </div>
 
             {/* ===== Right Side — 2/3 ===== */}
-            <div className="w-full lg:w-2/3 h-full">
+            <div className="w-full lg:w-2/3 h-full bg-background rounded-3xl p-6 md:p-8 shadow-lg">
               <div className="px-2 py-3">
                 <p
                   className="text-[11px] font-bold uppercase tracking-[0.25em] mb-2"
@@ -132,8 +132,8 @@ function Hero() {
                   Explore Collections
                 </p>
                 <h1
-                  className="text-2xl lg:text-3xl font-extrabold leading-tight tracking-tight"
-                  style={{ color: "#181d2a" }}
+                  className="text-2xl lg:text-3xl font-extrabold leading-tight tracking-tight text-mencolor"
+                  // style={{ color: "#181d2a" }}
                 >
                   New define of E-commerce and Shopping
                 </h1>

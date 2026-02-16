@@ -24,7 +24,7 @@ const About = () => {
   ]
 
   return (
-    <section className='w-full px-4 py-4 md:px-8 lg:px-4'>
+    <section id="about" className='w-full px-4 py-4 md:px-8 lg:px-4 bg-mencolor rounded-3xl mt-4'>
       <div className='flex flex-col md:flex-row gap-4 md:gap-4'>
         {/* About Section - Takes full width on mobile, half on desktop */}
         <div className='flex-1 rounded-3xl p-4 md:p-8 bg-background shadow-lg'>

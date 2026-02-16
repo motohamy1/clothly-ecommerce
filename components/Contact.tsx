@@ -22,7 +22,7 @@ const Contact = () => {
   ]
 
   return (
-    <section className=' w-full px-4 py-6 md:px-8 lg:px-4'>
+    <section id="contact" className=' w-full px-4 py-6 md:px-8 lg:px-4 bg-mencolor rounded-3xl mt-4'>
       <ContactCard 
         title="Get In Touch"
         description="Have questions about our products or services? We'd love to hear from you. Fill out the form and we'll get back to you within 1 business day."

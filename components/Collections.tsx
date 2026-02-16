@@ -18,7 +18,7 @@ function Collections({ className }: { className?: string }) {
   ];
 
   return (
-    <div className="bg-[#F0EDCC] rounded-3xl px-4 md:px-8 lg:px-12 h-screen w-full relative overflow-y-auto">
+    <div id="categories" className="bg-[#F0EDCC] rounded-3xl px-4 md:px-8 lg:px-12 h-screen w-full relative overflow-y-auto">
       <div className="py-6 md:py-8 flex flex-col gap-8">
         <div className="h-[70vh]">
           <div className="flex justify-between items-center mb-4 mt-4">

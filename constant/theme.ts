@@ -4,6 +4,7 @@ export const brandColors = {
     DEFAULT: '#c08b79', // Terracotta
     hover: '#b07a69',
     light: '#d49a8a',
+    main: '#02343F'
   },
   secondary: {
     DEFAULT: '#768f7d', // Muted green

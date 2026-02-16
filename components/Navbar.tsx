@@ -4,47 +4,60 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { brandColors } from "@/constant/theme";
 
-export default function Navbar() {
+interface NavLink {
+  href: string;
+  label: string;
+}
+
+interface NavbarProps {
+  navLinks?: NavLink[];
+  showShopLink?: boolean;
+}
+
+const defaultNavLinks: NavLink[] = [
+  { href: '#home', label: 'Home' },
+  { href: '#categories', label: 'Categories' },
+  { href: '#about', label: 'About' },
+  { href: '#contact', label: 'Contact' },
+]
+
+export default function Navbar({ navLinks = defaultNavLinks, showShopLink = true }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { primary, accent } = brandColors;
-
-  const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/shop', label: 'Shop' },
-    { href: '/categories', label: 'Categories' },
-    { href: '/about', label: 'About' },
-    { href: '/contact', label: 'Contact' },
-  ]
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-4 mt-6">
-          {/* Left Navbar - Logo and Navigation Links */}
-          <div className="flex-1 bg-transparent backdrop-blur-md border border-background/30 rounded-full shadow-[0_25px_40px_rgba(33,33,33,0.25)]">
-            <div className="flex items-center justify-between h-16 px-4">
-              {/* Logo */}
+          {/* Logo Section */}
+          <div className="bg-transparent backdrop-blur-md border border-background/30 rounded-full shadow-[0_25px_40px_rgba(33,33,33,0.25)]">
+            <div className="flex items-center h-16 px-6">
               <Link href="/" className="flex-shrink-0">
-                <span className="text-2xl font-bold bg-clip-text text-background">
+                <span className="text-2xl font-bold bg-clip-text text-[#c08b79] hover:text-background transition-all duration-300 hover:scale-105">
                   Clothly
                 </span>
               </Link>
+            </div>
+          </div>
 
+          {/* Navigation Links Section */}
+          <div className="flex-1 bg-transparent backdrop-blur-md border border-background/30 rounded-full shadow-[0_25px_40px_rgba(33,33,33,0.25)]">
+            <div className="flex items-center justify-between h-16 px-4">
               {/* Desktop Navigation Links */}
-              <div className="hidden md:flex items-center gap-1">
+              <div className="hidden md:flex items-center gap-1 w-full justify-center">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     className="px-4 py-2 font-medium rounded-full transition-all duration-300 hover:scale-105"
-                    style={{ color: primary.DEFAULT }}
+                    style={{ color: primary.main }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.color = "black";
+                      e.currentTarget.style.color = "#c08b79";
                       e.currentTarget.style.backgroundColor =
                         "rgba(192, 139, 121, 0.2)";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.color = primary.DEFAULT;
+                      e.currentTarget.style.color = primary.main;
                       e.currentTarget.style.backgroundColor = "transparent";
                     }}
                   >
@@ -55,10 +68,10 @@ export default function Navbar() {
 
               {/* Mobile menu button */}
               <button
-                className="md:hidden p-2 text-gray-500 rounded-lg transition-all duration-300 hover:bg-white/10"
+                className="md:hidden p-2 text-gray-500 rounded-lg transition-all duration-300 hover:bg-white/10 mx-auto"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 aria-label="Toggle menu"
-                style={{ color: primary.DEFAULT }}
+                style={{ color: primary.main }}
               >
                 <svg
                   className="w-6 h-6"
@@ -93,7 +106,7 @@ export default function Navbar() {
                     key={link.href}
                     href={link.href}
                     className="block px-4 py-2 text-gray-700 hover:bg-white/50 rounded-lg transition-all duration-300"
-                    style={{ color: primary.DEFAULT }}
+                    style={{ color: primary.main }}
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {link.label}
@@ -103,6 +116,27 @@ export default function Navbar() {
             )}
           </div>
 
+          {/* Shop Link Section */}
+          {showShopLink && (
+            <div className="bg-transparent backdrop-blur-md border border-background/30 rounded-full shadow-[0_25px_40px_rgba(33,33,33,0.25)]">
+              <div className="flex items-center h-16 px-6">
+                <Link
+                  href="/shop"
+                  className="text-xl font-bold transition-all duration-300 hover:scale-105"
+                  style={{ color: primary.main }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = "#c08b79";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = primary.main;
+                  }}
+                >
+                  Shop
+                </Link>
+              </div>
+            </div>
+          )}
+
           {/* Right Navbar - Search, Cart, Profile */}
           <div className="hidden md:flex bg-transparent backdrop-blur-md border border-background/30 rounded-full shadow-[0_25px_40px_rgba(33,33,33,0.25)]">
             <div className="flex items-center gap-2 h-16 px-4">
@@ -110,7 +144,7 @@ export default function Navbar() {
               <button
                 className="p-2 text-gray-500 rounded-lg transition-all duration-300 hover:bg-white/10"
                 aria-label="Search"
-                style={{ color: primary.DEFAULT }}
+                style={{ color: primary.main }}
               >
                 <svg
                   className="w-5 h-5"
@@ -131,7 +165,7 @@ export default function Navbar() {
               <button
                 className="p-2 text-gray-500 rounded-lg transition-all duration-300 hover:bg-white/10 relative"
                 aria-label="Cart"
-                style={{ color: primary.DEFAULT }}
+                style={{ color: primary.main }}
               >
                 <svg
                   className="w-5 h-5"
@@ -149,7 +183,7 @@ export default function Navbar() {
                 <span
                   className="absolute top-1 right-1 text-white text-[10px] font-semibold min-w-4 h-4 flex items-center justify-center rounded-lg px-1"
                   style={{
-                    background: `linear-gradient(to bottom right, ${primary.DEFAULT}, ${primary.hover})`,
+                    background: `linear-gradient(to bottom right, ${primary.main}, ${primary.DEFAULT})`,
                   }}
                 >
                   0
@@ -160,7 +194,7 @@ export default function Navbar() {
               <button
                 className="p-2 text-gray-500 rounded-lg transition-all duration-300 hover:bg-white/10"
                 aria-label="Account"
-                style={{ color: primary.DEFAULT }}
+                style={{ color: primary.main }}
               >
                 <svg
                   className="w-5 h-5"

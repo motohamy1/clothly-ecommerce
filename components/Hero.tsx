@@ -51,7 +51,7 @@ const categories = [
 function Hero() {
   return (
     <>
-      <section className="min-h-screen pt-28 pb-6 px-4 sm:px-6 lg:px-4">
+      <section id="home" className="min-h-screen pt-28 pb-6 px-4 sm:px-6 lg:px-4 bg-mencolor rounded-3xl mb-4">
         <div className="mx-auto max-w-full h-[calc(100vh-8rem)]">
           <div className="flex flex-col lg:flex-row gap-5 h-full">
             {/* ===== Left Side — 1/3 ===== */}

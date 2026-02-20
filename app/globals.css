@@ -115,11 +115,75 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Shop page theme - light cream background */
+.shop {
+  --background: #f0edcc;
+  --foreground: #02343F;
+  --card: #ffffff;
+  --card-foreground: #02343F;
+  --popover: #ffffff;
+  --popover-foreground: #02343F;
+  --primary: #02343F;
+  --primary-foreground: #f0edcc;
+  --secondary: #c08b79;
+  --secondary-foreground: #ffffff;
+  --muted: #e5e2c4;
+  --muted-foreground: #02343F;
+  --accent: #c08b79;
+  --accent-foreground: #ffffff;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #02343F;
+  --input: #02343F;
+  --ring: #02343F;
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: #f0edcc;
+  --sidebar-foreground: #02343F;
+  --sidebar-primary: #02343F;
+  --sidebar-primary-foreground: #f0edcc;
+  --sidebar-accent: #c08b79;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #02343F;
+  --sidebar-ring: #02343F;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-                                                                                                                                                                                                                                                                body {
+                                                                                                                                                                                                                                                                 body {
     @apply bg-background text-foreground;
     }
+}
+
+/* Shop page theme wrapper */
+.shop-theme {
+  --background: #f0edcc;
+  --foreground: #02343F;
+  --card: #ffffff;
+  --card-foreground: #02343F;
+  --popover: #ffffff;
+  --popover-foreground: #02343F;
+  --primary: #02343F;
+  --primary-foreground: #f0edcc;
+  --secondary: #c08b79;
+  --secondary-foreground: #ffffff;
+  --muted: #e5e2c4;
+  --muted-foreground: #02343F;
+  --accent: #c08b79;
+  --accent-foreground: #ffffff;
+  --border: #02343F;
+  --input: #02343F;
+  --ring: #02343F;
+  --sidebar: #f0edcc;
+  --sidebar-foreground: #02343F;
+  --sidebar-primary: #02343F;
+  --sidebar-primary-foreground: #f0edcc;
+  --sidebar-accent: #c08b79;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #02343F;
+  --sidebar-ring: #02343F;
 }

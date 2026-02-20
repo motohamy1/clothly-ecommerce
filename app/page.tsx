@@ -1,7 +1,7 @@
 import Hero from "@/components/Hero";
 import Collections from "@/components/Collections";
 import Navbar from "@/components/Navbar";
-import Testimonials from "@/components/About";
+import About from "@/components/About";
 import Contact from "@/components/Contact";
 function page() {
   return (
@@ -9,7 +9,7 @@ function page() {
       <Navbar />
       <Hero />
       <Collections />
-      <Testimonials />
+      <About />
       <Contact />
     </>
   );

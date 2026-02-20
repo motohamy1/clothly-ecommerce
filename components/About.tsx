@@ -2,7 +2,7 @@ import React from 'react'
 import { AnimatedTestimonials } from './ui/animated-testimonials'
 
 const About = () => {
-  const testimonials = [
+  const About = [
     {
       quote: "This product exceeded my expectations! The quality is outstanding and the customer service was excellent.",
       name: "Sarah Johnson",
@@ -51,7 +51,7 @@ const About = () => {
           </h2>
           <div>
             <AnimatedTestimonials 
-              testimonials={testimonials}
+              testimonials={About}
               autoplay={true}
             />
           </div>

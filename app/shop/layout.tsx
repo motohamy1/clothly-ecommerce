@@ -1,30 +1,42 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "../globals.css";
+"use client";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import { usePathname } from "next/navigation";
+import Navbar from "@/components/Navbar";
+import PageTransition from "@/components/ui/PageTransition";
+import { SHOP_CATEGORIES, ShopCategory } from "./HeroShop";
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-}); 
+// Navigation links for shop pages
+const shopNavLinks = Object.values(SHOP_CATEGORIES).map((cat) => ({
+  href: `/shop/${cat.label.toLowerCase()}`,
+  label: cat.label,
+}));
 
+// Get current category from pathname
+const getCurrentCategory = (pathname: string): ShopCategory => {
+  const segments = pathname.split("/");
+  const lastSegment = segments[segments.length - 1];
+  if (["men", "women", "kids", "couples"].includes(lastSegment)) {
+    return lastSegment as ShopCategory;
+  }
+  return "men";
+};
 
-export default function RootLayout({
+export default function ShopLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+  const currentCategory = getCurrentCategory(pathname);
+
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <div className="shop-theme min-h-screen bg-mencolor">
+      <Navbar
+        navLinks={shopNavLinks}
+        showShopLink={false}
+        activeCategory={currentCategory}
+      />
+      <PageTransition>{children}</PageTransition>
+    </div>
   );
 }

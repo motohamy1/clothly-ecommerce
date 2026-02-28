@@ -8,7 +8,7 @@ const port = process.env.PORT || 5000;
 app.use(express.json());
 app.use('/shop', clothesRouter)
 
-mongoose.connect('mongodb://localhost:27017/Clothely-ecommerce')
+mongoose.connect('mongodb://localhost:27017/Clothly-ecommerce')
     .then(() => {
         console.log('Connected to MongoDB');
         app.listen(port, () => {

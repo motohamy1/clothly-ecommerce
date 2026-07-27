@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Shell(del:*)",
+      "Shell(rmdir:*)",
+      "Shell(npm:*)"
+    ],
+    "deny": [],
+    "defaultMode": "default"
+  }
+}

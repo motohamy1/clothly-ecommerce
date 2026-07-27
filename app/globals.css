@@ -48,7 +48,7 @@
 
 :root {
   --radius: 0.625rem;
-    --background: #02343F;
+    --background: #f0edcc;
     --mencolor: #F0EDCC;
     --foreground: #000000;
     --card: #F0EDCC;
@@ -154,9 +154,11 @@
   * {
     @apply border-border outline-ring/50;
   }
-                                                                                                                                                                                                                                                                 body {
-    @apply bg-background text-foreground;
-    }
+
+  html body {
+    background-color: var(--background);
+    color: var(--foreground);
+  }
 }
 
 /* Shop page theme wrapper */

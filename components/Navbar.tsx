@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from "next/navigation";
-import { brandColors } from "@/constant/theme";
 
 interface NavLink {
   href: string;
@@ -33,7 +32,10 @@ export default function Navbar({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isOverDarkSection, setIsOverDarkSection] = useState(false);
   const pathname = usePathname();
-  const { primary } = brandColors;
+  const primary = {
+    main: '#02343F',
+    DEFAULT: '#c08b79',
+  };
 
   useEffect(() => {
     const handleScroll = () => {

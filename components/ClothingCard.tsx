@@ -132,13 +132,18 @@ const StyledWrapper = styled.div`
     bottom: -50%;
     left: -50%;
     z-index: 3;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding-top: 14px;
+    padding-right: 14px;
   }
 
   .box2 {
     width: 30%;
     height: 30%;
-    bottom: -30%;
+    top: -30%;
     left: -30%;
+    z-index: 1;
     transition-delay: 0.2s;
   }
 
@@ -179,9 +184,17 @@ const StyledWrapper = styled.div`
     transform: scale(1.05);
   }
 
-  .card:hover .box {
-    bottom: -1px;
-    left: -1px;
+  .card:hover .box1 {
+    top: 0;
+    left: 0;
+  }
+
+  .card:hover .box2 {
+    width: 70%;
+    height: 30%;
+    top: 0;
+    left: 0;
+    z-index: 3;
   }
 
   .card:hover .logo {

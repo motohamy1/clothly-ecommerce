@@ -1,13 +1,114 @@
-import React from 'react'
+'use client'
+
+import React, { useEffect, useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation';
 import styled from 'styled-components';
 
+const items = [
+    { label: 'Men Shop', id: 'men-collection', href: '/men' },
+    { label: 'Women Shop', id: 'women-collection' },
+    { label: 'Kids Shop', id: 'kids-collection' },
+];
+
 function SideBar() {
+    const [activeIndex, setActiveIndex] = useState<number | null>(null);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+    const router = useRouter();
+    const pathname = usePathname();
+
+    const scrollTo = (id: string) => {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    const handleCardClick = (index: number, id: string, href?: string) => {
+        if (href) {
+            router.push(href);
+        } else if ((pathname ?? '') === '/') {
+            setActiveIndex(index);
+            scrollTo(id);
+        } else {
+            router.push(`/#${id}`);
+        }
+    };
+
+    const handleMouseEnter = (index: number) => {
+        setHoveredIndex(index);
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredIndex(null);
+    };
+
+    useEffect(() => {
+        setActiveIndex(null);
+
+        const visibility = new Map<string, number>();
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                for (const entry of entries) {
+                    if (entry.isIntersecting) {
+                        visibility.set(entry.target.id, entry.intersectionRatio);
+                    } else {
+                        visibility.delete(entry.target.id);
+                    }
+                }
+
+                let activeId: string | null = null;
+                let highestRatio = -1;
+                for (const [id, ratio] of visibility) {
+                    if (ratio > highestRatio) {
+                        highestRatio = ratio;
+                        activeId = id;
+                    }
+                }
+
+                if (activeId !== null) {
+                    const index = items.findIndex((item) => item.id === activeId);
+                    setActiveIndex(index !== -1 ? index : null);
+                } else {
+                    setActiveIndex(null);
+                }
+            },
+            {
+                rootMargin: '-136px 0px 0px 0px',
+                threshold: [0, 0.25, 0.5, 0.75, 1],
+            }
+        );
+
+        items.forEach((item) => {
+            const element = document.getElementById(item.id);
+            if (element) observer.observe(element);
+        });
+
+        return () => observer.disconnect();
+    }, [pathname ?? '']);
+
     return (
         <StyledWrapper>
             <div className="card fixed top-[8.5rem] left-3 z-40">
-                <div><button>Men Shop</button></div>
-                <div><button>Women Shop</button></div>
-                <div><button>Kids Shop</button></div>
+                {items.map((item, index) => {
+                    const isExpanded = activeIndex === index || hoveredIndex === index;
+                    return (
+                        <div
+                            key={item.id}
+                            className={isExpanded ? 'active' : ''}
+                            onClick={() => handleCardClick(index, item.id, item.href)}
+                            onMouseEnter={() => handleMouseEnter(index)}
+                            onMouseLeave={handleMouseLeave}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    handleCardClick(index, item.id, item.href);
+                                }
+                            }}
+                        >
+                            <span>{item.label}</span>
+                        </div>
+                    );
+                })}
             </div>
         </StyledWrapper>
     );
@@ -17,7 +118,7 @@ const StyledWrapper = styled.div`
   .card {
     width: 210px;
     height: calc(100vh - 9rem);
-    border-radius: 10px;
+    border-radius: 20px;
     background: transparent;
     display: flex;
     flex-direction: column;
@@ -30,7 +131,7 @@ const StyledWrapper = styled.div`
     flex: 1;
     overflow: hidden;
     cursor: pointer;
-    border-radius: 8px;
+    border-radius: 15px;
     transition: flex 0.5s;
     background: #f0edcc;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
@@ -38,30 +139,32 @@ const StyledWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    user-select: none;
   }
 
   .card div:last-child {
     margin-bottom: 0;
   }
 
-  .card div:hover {
+  .card div:hover,
+  .card div.active {
     flex: 4;
   }
 
-  .card div button {
+  .card div span {
     padding: 0.2em;
     text-align: center;
     transform: rotate(-0deg);
     transition: transform 0.5s;
     text-transform: uppercase;
-    color: #00000;
+    color: #000;
     font-weight: 700;
-    // letter-spacing: 0.1em;
     position: relative;
     z-index: 1;
   }
 
-  .card div:hover button {
+  .card div:hover span,
+  .card div.active span {
     transform: rotate(0);
   }
 
@@ -79,7 +182,8 @@ const StyledWrapper = styled.div`
     opacity: 0;
   }
 
-  .card div:hover::before {
+  .card div:hover::before,
+  .card div.active::before {
     opacity: 1;
   }`;
 

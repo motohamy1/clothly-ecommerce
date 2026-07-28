@@ -4,10 +4,10 @@ import BounceCards from './BounceCards'
 function HomePage() {
 
     const images = [
-        "/public/images/download(1).png",
-        "/public/images/download(2).png",
-        "/public/images/download(3).png",
-        "/public/images/download(4).png"
+        "/images/download%20(1).png",
+        "/images/download%20(2).png",
+        "/images/download%20(3).png",
+        "/images/download%20(4).png"
     ]
 
     const transformStyles = [
@@ -19,9 +19,9 @@ function HomePage() {
     ];
 
     return (
-        <div className='flex gap-20 h-screen items-center justify-center'>
+        <div className='flex gap-20 h-[calc(100vh-8.5rem)] w-full items-center justify-center overflow-hidden'>
             <BounceCards
-                className='-translate-y-20 translate-x-80'
+                className='-translate-y-20 translate-x-60'
                 images={images}
                 containerWidth={400}
                 containerHeight={400}
@@ -32,7 +32,7 @@ function HomePage() {
                 enableHover={true}
             />
             <BounceCards
-                className='translate-y-60'
+                className='translate-y-50'
                 images={images}
                 containerWidth={400}
                 containerHeight={400}
@@ -43,7 +43,7 @@ function HomePage() {
                 enableHover={true}
             />
             <BounceCards
-                className='-translate-y-20 -translate-x-20'
+                className='-translate-y-60 -translate-x-40'
                 images={images}
                 containerWidth={400}
                 containerHeight={400}

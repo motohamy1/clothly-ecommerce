@@ -88,11 +88,11 @@ function SideBar() {
         <StyledWrapper>
             <div className="card fixed top-[8.5rem] left-3 z-40">
                 {items.map((item, index) => {
-                    const isExpanded = activeIndex === index || hoveredIndex === index;
+                    const isActive = activeIndex === index;
                     return (
                         <div
                             key={item.id}
-                            className={isExpanded ? 'active' : ''}
+                            className={isActive ? 'active' : ''}
                             onClick={() => handleCardClick(index, item.id, item.href)}
                             onMouseEnter={() => handleMouseEnter(index)}
                             onMouseLeave={handleMouseLeave}
@@ -149,6 +149,10 @@ const StyledWrapper = styled.div`
   .card div:hover,
   .card div.active {
     flex: 4;
+  }
+
+  .card div.active {
+    background: #DCD587;
   }
 
   .card div span {

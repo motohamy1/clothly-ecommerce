@@ -3,18 +3,41 @@
 import React, { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation';
 import styled from 'styled-components';
+import { getProductSection } from '@/lib/products';
 
 const items = [
     { label: 'Men Shop', id: 'men-collection', href: '/men' },
-    { label: 'Women Shop', id: 'women-collection' },
-    { label: 'Kids Shop', id: 'kids-collection' },
+    { label: 'Women Shop', id: 'women-collection', href: '/women' },
+    { label: 'Kids Shop', id: 'kids-collection', href: '/kids' },
 ];
+
+const PRODUCT_ROUTE_RE = /^\/product\/([^/]+)/;
 
 function SideBar() {
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     const router = useRouter();
     const pathname = usePathname();
+    const [prevPathname, setPrevPathname] = useState(pathname);
+
+    if (pathname !== prevPathname) {
+        setPrevPathname(pathname);
+        setActiveIndex(null);
+        setHoveredIndex(null);
+    }
+
+    const routeActiveIndex = (() => {
+        if (!pathname) return -1;
+        const sectionMatch = pathname.match(PRODUCT_ROUTE_RE);
+        if (sectionMatch) {
+            const section = getProductSection(sectionMatch[1]);
+            if (section) {
+                return items.findIndex((item) => item.href === `/${section}`);
+            }
+        }
+        return items.findIndex((item) => item.href && pathname.startsWith(item.href));
+    })();
+    const displayedActiveIndex = routeActiveIndex !== -1 ? routeActiveIndex : activeIndex;
 
     const scrollTo = (id: string) => {
         document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -40,8 +63,6 @@ function SideBar() {
     };
 
     useEffect(() => {
-        setActiveIndex(null);
-
         const visibility = new Map<string, number>();
 
         const observer = new IntersectionObserver(
@@ -88,7 +109,7 @@ function SideBar() {
         <StyledWrapper>
             <div className="card fixed top-[8.5rem] left-3 z-40">
                 {items.map((item, index) => {
-                    const isActive = activeIndex === index;
+                    const isActive = displayedActiveIndex === index;
                     return (
                         <div
                             key={item.id}
@@ -133,7 +154,7 @@ const StyledWrapper = styled.div`
     cursor: pointer;
     border-radius: 15px;
     transition: flex 0.5s;
-    background: #f0edcc;
+    background: oklch(0.943 0.051 98.2);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     margin-bottom: 12px;
     display: flex;
@@ -152,7 +173,7 @@ const StyledWrapper = styled.div`
   }
 
   .card div.active {
-    background: #DCD587;
+    background: oklch(0.88 0.12 98);
   }
 
   .card div span {
@@ -161,7 +182,7 @@ const StyledWrapper = styled.div`
     transform: rotate(-0deg);
     transition: transform 0.5s;
     text-transform: uppercase;
-    color: #000;
+    color: oklch(0.15 0.02 98);
     font-weight: 700;
     position: relative;
     z-index: 1;

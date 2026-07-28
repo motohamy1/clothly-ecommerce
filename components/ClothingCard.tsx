@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import styled from 'styled-components';
 import type { Product } from '@/lib/products';
 
@@ -8,54 +9,65 @@ interface ClothingCardProps {
     product: Product;
 }
 
-const StarRating = ({ rating }: { rating: number }) => {
-    const full = Math.floor(rating);
-    const half = rating % 1 >= 0.5 ? 1 : 0;
-    const empty = 5 - full - half;
-    return (
-        <span>
-            {'★'.repeat(full)}
-            {half ? '½' : ''}
-            {'☆'.repeat(empty)}
-        </span>
-    );
-};
-
 const ClothingCard = ({ product }: ClothingCardProps) => {
     return (
         <StyledWrapper>
-            <div className="card">
-                <div className="background">
-                    <img src={product.image} alt={product.name} className="product-img" />
+            <Link href={`/product/${product.id}`} className="card-shell" aria-label={`View details for ${product.name}`}>
+                <div className="card">
+                    <div className="background">
+                        <img src={product.image} alt={product.name} className="product-img" />
+                    </div>
+                    <div className="logo">
+                        <span className="product-name">{product.name}</span>
+                    </div>
+                    <div className="box box1">
+                        <span className="box-label">${product.price.toFixed(2)}</span>
+                    </div>
+                    <div className="box box2">
+                        <span className="box-label size-label">{product.sizes?.[1] ?? 'M'}</span>
+                    </div>
+                    {/*<button
+                        type="button"
+                        className="add-to-cart"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }}
+                    >
+                        Add to Cart
+                    </button>*/}
                 </div>
-                <div className="logo">
-                    <span className="product-name">{product.name}</span>
-                </div>
-                <div className="box box1">
-                    <span className="box-label">${product.price.toFixed(2)}</span>
-                </div>
-                <div className="box box2">
-                    <span className="box-label rating-stars"><StarRating rating={product.rating} /></span>
-                </div>
-                <button type="button" className="add-to-cart">
-                    Add to Cart
-                </button>
-            </div>
+            </Link>
         </StyledWrapper>
     );
 };
 
 const StyledWrapper = styled.div`
+  .card-shell {
+    display: block;
+    background: oklch(0.2 0.03 98 / 0.04);
+    border: 1px solid oklch(0.2 0.03 98 / 0.08);
+    border-radius: 34px;
+    padding: 5px;
+    flex-shrink: 0;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.7s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.7s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .card-shell:hover {
+    transform: scale(1.03);
+    box-shadow: 0 20px 60px oklch(0.2 0.03 98 / 0.12);
+  }
+
   .card {
     position: relative;
     width: 260px;
     height: 260px;
     background: lightgrey;
-    border-radius: 30px;
+    border-radius: 28px;
     overflow: hidden;
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-    transition: all 1s ease-in-out;
-    border: 2px solid rgb(255, 255, 255);
+    box-shadow: rgba(100, 100, 111, 0.15) 0px 4px 16px 0px;
     flex-shrink: 0;
     cursor: pointer;
   }
@@ -63,7 +75,7 @@ const StyledWrapper = styled.div`
   .background {
     position: absolute;
     inset: 0;
-    background-color: #4158D0;
+    background-color: oklch(0.32 0.08 130);
   }
 
   .product-img {
@@ -78,10 +90,10 @@ const StyledWrapper = styled.div`
     right: 50%;
     bottom: 50%;
     transform: translate(50%, 50%);
-    transition: all 0.6s ease-in-out;
+    transition: all 0.6s cubic-bezier(0.32, 0.72, 0, 1);
     font-size: 0.9em;
     font-weight: 600;
-    color: #ffffff;
+    color: oklch(0.943 0.051 98.2);
     letter-spacing: 2px;
     text-align: center;
     max-width: 180px;
@@ -95,13 +107,13 @@ const StyledWrapper = styled.div`
   .box {
     position: absolute;
     padding: 10px;
-    background: rgba(255, 255, 255, 0.389);
-    border-top: 2px solid rgb(255, 255, 255);
-    border-right: 1px solid white;
+    background: oklch(0.943 0.051 98.2 / 0.389);
+    border-top: 2px solid oklch(0.943 0.051 98.2);
+    border-right: 1px solid oklch(0.943 0.051 98.2);
     border-radius: 10% 13% 42% 0%/10% 12% 75% 0%;
     box-shadow: rgba(100, 100, 111, 0.364) -7px 7px 29px 0px;
     transform-origin: bottom left;
-    transition: all 1s ease-in-out;
+    transition: all 1s cubic-bezier(0.32, 0.72, 0, 1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -113,13 +125,13 @@ const StyledWrapper = styled.div`
     inset: 0;
     border-radius: inherit;
     opacity: 0;
-    transition: all 0.5s ease-in-out;
+    transition: all 0.5s cubic-bezier(0.32, 0.72, 0, 1);
   }
 
   .box-label {
     font-size: 0.75em;
     font-weight: 700;
-    color: #fff;
+    color: oklch(0.943 0.051 98.2);
     text-shadow: 0 1px 4px rgba(0,0,0,0.3);
     text-align: center;
     line-height: 1.2;
@@ -141,24 +153,26 @@ const StyledWrapper = styled.div`
   .box2 {
     width: 30%;
     height: 30%;
-    top: -30%;
+    bottom: -30%;
     left: -30%;
     z-index: 1;
     transition-delay: 0.2s;
   }
 
-  .rating-stars {
+  .size-label {
     font-size: 0.85em;
+    font-weight: 700;
     letter-spacing: 0px;
   }
+
 
   .add-to-cart {
     position: absolute;
     bottom: 14px;
     right: 14px;
     padding: 10px 18px;
-    background: #111;
-    color: #fff;
+    background: oklch(0.15 0.02 98);
+    color: oklch(0.943 0.051 98.2);
     border: none;
     border-radius: 999px;
     font-size: 0.82em;
@@ -166,33 +180,29 @@ const StyledWrapper = styled.div`
     letter-spacing: 0.3px;
     cursor: pointer;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    transition: background 0.5s cubic-bezier(0.32, 0.72, 0, 1), transform 0.5s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.5s cubic-bezier(0.32, 0.72, 0, 1);
     z-index: 2;
   }
 
   .add-to-cart:hover {
-    background: #000;
+    background: oklch(0.1 0.01 98);
     transform: translateY(-1px);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
   }
 
   .add-to-cart:active {
-    transform: translateY(0);
-  }
-
-  .card:hover {
-    transform: scale(1.05);
+    transform: translateY(0) scale(0.98);
   }
 
   .card:hover .box1 {
-    top: 0;
+    bottom: 0;
     left: 0;
   }
 
   .card:hover .box2 {
-    width: 70%;
+    width: 30%;
     height: 30%;
-    top: 0;
+    bottom: 0;
     left: 0;
     z-index: 3;
   }

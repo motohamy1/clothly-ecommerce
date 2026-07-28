@@ -11,7 +11,7 @@
   position: absolute;
   width: 200px;
   aspect-ratio: 1;
-  border: 5px solid #fff;
+  border: 5px solid oklch(0.943 0.051 98.2);
   border-radius: 25px;
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { gsap } from 'gsap';
 import styled from 'styled-components';
 
@@ -10,56 +10,88 @@ interface GsapCarouselProps {
   gap: number;
 }
 
+interface ScrollState {
+  canPrev: boolean;
+  canNext: boolean;
+}
+
+const INITIAL_STATE: ScrollState = { canPrev: false, canNext: true };
+
+function createCarouselStore() {
+  let state: ScrollState = INITIAL_STATE;
+  const listeners = new Set<() => void>();
+
+  return {
+    subscribe(listener: () => void) {
+      listeners.add(listener);
+      return () => {
+        listeners.delete(listener);
+      };
+    },
+    getSnapshot() {
+      return state;
+    },
+    getServerSnapshot() {
+      return INITIAL_STATE;
+    },
+    set(next: ScrollState) {
+      if (state.canPrev === next.canPrev && state.canNext === next.canNext) return;
+      state = next;
+      listeners.forEach((l) => l());
+    },
+  };
+}
+
+type CarouselStore = ReturnType<typeof createCarouselStore>;
+
 export default function GsapCarousel({ children, itemWidth, gap }: GsapCarouselProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const [canPrev, setCanPrev] = useState(false);
-  const [canNext, setCanNext] = useState(true);
+  const [store] = useState(createCarouselStore);
 
-  const getMaxScroll = () => {
-    if (!containerRef.current || !trackRef.current) return 0;
-    const containerW = containerRef.current.offsetWidth;
-    const trackW = trackRef.current.scrollWidth;
-    return Math.max(0, trackW - containerW);
-  };
+  const { canPrev, canNext } = useSyncExternalStore(
+    store.subscribe,
+    store.getSnapshot,
+    store.getServerSnapshot,
+  );
 
-  const getCurrentX = () => {
-    if (!trackRef.current) return 0;
-    return gsap.getProperty(trackRef.current, 'x') as number;
-  };
-
-  const updateButtons = () => {
-    const x = getCurrentX();
-    const max = getMaxScroll();
-    setCanPrev(x < 0);
-    setCanNext(Math.abs(x) < max - 1);
+  const measure = (): ScrollState => {
+    if (!containerRef.current || !trackRef.current) return INITIAL_STATE;
+    const x = gsap.getProperty(trackRef.current, 'x') as number;
+    const max = Math.max(
+      0,
+      trackRef.current.scrollWidth - containerRef.current.offsetWidth,
+    );
+    return { canPrev: x < 0, canNext: Math.abs(x) < max - 1 };
   };
 
   useEffect(() => {
-    updateButtons();
-    const handleResize = () => updateButtons();
+    store.set(measure());
+
+    const handleResize = () => store.set(measure());
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [children]);
+  }, [children, store]);
 
   const scroll = (direction: 'prev' | 'next') => {
-    if (!trackRef.current) return;
+    if (!containerRef.current || !trackRef.current) return;
     const step = itemWidth + gap;
-    const currentX = getCurrentX();
-    const max = getMaxScroll();
+    const x = gsap.getProperty(trackRef.current, 'x') as number;
+    const max = Math.max(
+      0,
+      trackRef.current.scrollWidth - containerRef.current.offsetWidth,
+    );
 
-    let targetX: number;
-    if (direction === 'prev') {
-      targetX = Math.min(0, currentX + step);
-    } else {
-      targetX = Math.max(-max, currentX - step);
-    }
+    const targetX =
+      direction === 'prev'
+        ? Math.min(0, x + step)
+        : Math.max(-max, x - step);
 
     gsap.to(trackRef.current, {
       x: targetX,
       duration: 0.5,
       ease: 'power2.out',
-      onUpdate: updateButtons,
+      onUpdate: () => store.set(measure()),
     });
   };
 
@@ -75,22 +107,26 @@ export default function GsapCarousel({ children, itemWidth, gap }: GsapCarouselP
         </div>
       </div>
       <div className="controls">
-        <button
-          className="arrow"
-          onClick={() => scroll('prev')}
-          disabled={!canPrev}
-          aria-label="Previous"
-        >
-          ‹
-        </button>
-        <button
-          className="arrow"
-          onClick={() => scroll('next')}
-          disabled={!canNext}
-          aria-label="Next"
-        >
-          ›
-        </button>
+        <div className="arrow-shell">
+          <button
+            className="arrow"
+            onClick={() => scroll('prev')}
+            disabled={!canPrev}
+            aria-label="Previous"
+          >
+            ‹
+          </button>
+        </div>
+        <div className="arrow-shell">
+          <button
+            className="arrow"
+            onClick={() => scroll('next')}
+            disabled={!canNext}
+            aria-label="Next"
+          >
+            ›
+          </button>
+        </div>
       </div>
     </StyledWrapper>
   );
@@ -112,35 +148,55 @@ const StyledWrapper = styled.div`
 
   .controls {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 8px;
     margin-top: 12px;
     padding-right: 4px;
   }
 
-  .arrow {
-    width: 40px;
-    height: 40px;
+  .arrow-shell {
+    background: oklch(0.2 0.03 98 / 0.04);
+    border: 1px solid oklch(0.2 0.03 98 / 0.12);
     border-radius: 50%;
-    border: 2px solid #02343F;
-    background: transparent;
-    color: #02343F;
-    font-size: 22px;
-    font-weight: 700;
+    padding: 3px;
+    display: inline-flex;
+    transition: all 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .arrow-shell:not(:has(.arrow:disabled)):hover {
+    background: oklch(0.2 0.03 98 / 0.08);
+    transform: scale(1.08);
+  }
+
+  .arrow {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid oklch(0.2 0.03 98 / 0.6);
+    background: oklch(0.943 0.051 98.2);
+    color: oklch(0.2 0.03 98);
+    font-size: 20px;
+    font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s, color 0.2s, opacity 0.2s;
+    transition: all 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+    box-shadow: inset 0 1px 1px oklch(1 0 0 / 0.5);
   }
 
   .arrow:hover:not(:disabled) {
-    background: #02343F;
-    color: #fff;
+    background: oklch(0.2 0.03 98);
+    color: oklch(0.943 0.051 98.2);
+    border-color: transparent;
+  }
+
+  .arrow:active:not(:disabled) {
+    transform: scale(0.95);
   }
 
   .arrow:disabled {
-    opacity: 0.3;
+    opacity: 0.25;
     cursor: default;
   }
 `;

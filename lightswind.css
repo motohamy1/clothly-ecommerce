@@ -175,10 +175,17 @@
 
 /* Animated Gradient Border Button Property and Animation */
 /* @property MUST be defined at the global scope, not inside a rule */
+/* Commented out - not supported by PostCSS parser
 @property --border-angle {
   syntax: "<angle>";
   inherits: true;
   initial-value: 0turn;
+}
+*/
+
+/* Using CSS variables fallback instead */
+:root {
+  --border-angle: 0turn;
 }
 
 @keyframes bg-spin {

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import styled from 'styled-components';
 import type { Product } from '@/lib/products';
 
@@ -11,7 +12,7 @@ interface ShoeCardProps {
 const ShoeCard = ({ product }: ShoeCardProps) => {
   return (
     <StyledWrapper>
-      <div className="card">
+      <Link href={`/product/${product.id}`} className="card" aria-label={`View details for ${product.name}`}>
         <div className="circle">
           <img src={product.image} alt={product.name} />
         </div>
@@ -19,7 +20,7 @@ const ShoeCard = ({ product }: ShoeCardProps) => {
           <span className="name">{product.name}</span>
           <span className="price">${product.price.toFixed(2)}</span>
         </div>
-      </div>
+      </Link>
     </StyledWrapper>
   );
 };
@@ -32,6 +33,8 @@ const StyledWrapper = styled.div`
     gap: 12px;
     flex-shrink: 0;
     cursor: pointer;
+    text-decoration: none;
+    color: inherit;
   }
 
   .circle {
@@ -39,7 +42,7 @@ const StyledWrapper = styled.div`
     height: 160px;
     border-radius: 50%;
     overflow: hidden;
-    background: #f5f0eb;
+    background: oklch(0.96 0.02 90);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
@@ -70,13 +73,13 @@ const StyledWrapper = styled.div`
   .name {
     font-size: 14px;
     font-weight: 600;
-    color: #1a1a1a;
+    color: oklch(0.2 0.03 98);
   }
 
   .price {
     font-size: 15px;
     font-weight: 700;
-    color: #02343F;
+    color: oklch(0.2 0.03 98);
   }
 `;
 

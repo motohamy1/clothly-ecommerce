@@ -21,7 +21,7 @@ const ClothingCard = ({ product }: ClothingCardProps) => {
                         <span className="product-name">{product.name}</span>
                     </div>
                     <div className="box box1">
-                        <span className="box-label">${product.price.toFixed(2)}</span>
+                        <span className="box-label tabular-nums">${product.price.toFixed(2)}</span>
                     </div>
                     <div className="box box2">
                         <span className="box-label size-label">{product.sizes?.[1] ?? 'M'}</span>
@@ -94,7 +94,7 @@ const StyledWrapper = styled.div`
     font-size: 0.9em;
     font-weight: 600;
     color: oklch(0.943 0.051 98.2);
-    letter-spacing: 2px;
+    letter-spacing: 0.05em;
     text-align: center;
     max-width: 180px;
     text-shadow: 0 2px 8px rgba(0,0,0,0.4);

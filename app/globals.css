@@ -158,6 +158,16 @@
   html body {
     background-color: var(--background);
     color: var(--foreground);
+    font-synthesis: none;
+    text-size-adjust: 100%;
+  }
+
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+
+  p, li {
+    text-wrap: pretty;
   }
 }
 

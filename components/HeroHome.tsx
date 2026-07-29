@@ -76,7 +76,7 @@ export default function HeroHome() {
                 {/* Headline */}
                 <h1
                     ref={headingRef}
-                    className="font-extrabold whitespace-pre-line"
+                    className="font-extrabold whitespace-pre-line text-balance"
                     style={{
                         fontSize:   'clamp(2.5rem, 7vw, 7rem)',
                         fontWeight: 800,
@@ -93,7 +93,7 @@ export default function HeroHome() {
                 {/* Subtext */}
                 <p
                     ref={subtextRef}
-                    className="text-base md:text-lg max-w-sm"
+                    className="text-base md:text-lg max-w-sm text-pretty"
                     style={{
                         color:      'oklch(0.48 0.03 98)',
                         opacity:    0,

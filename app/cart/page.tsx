@@ -56,7 +56,7 @@ export default function CartPage() {
             <ChevronLeft className="h-4 w-4" strokeWidth={2} />
             Back
           </button>
-          <h1 className="text-2xl font-extrabold md:text-3xl" style={{ color: DARK }}>
+          <h1 className="text-2xl font-extrabold md:text-3xl text-balance" style={{ color: DARK }}>
             Cart
             <span className="ml-2 text-base font-medium" style={{ color: DARK_MUTED }}>
               ({totalItems} {totalItems === 1 ? 'item' : 'items'})
@@ -154,7 +154,7 @@ export default function CartPage() {
 
                     {/* Price & Remove */}
                     <div className="flex items-center gap-3">
-                      <span className="font-bold" style={{ color: DARK }}>
+                      <span className="font-bold tabular-nums" style={{ color: DARK }}>
                         ${(item.product.price * item.quantity).toFixed(2)}
                       </span>
                       <button
@@ -189,7 +189,7 @@ export default function CartPage() {
             <div className="space-y-3 mb-6">
               <div className="flex justify-between text-sm">
                 <span style={{ color: DARK_MUTED }}>Subtotal</span>
-                <span style={{ color: DARK }}>${totalPrice.toFixed(2)}</span>
+                <span className="tabular-nums" style={{ color: DARK }}>${totalPrice.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span style={{ color: DARK_MUTED }}>Shipping</span>
@@ -200,7 +200,7 @@ export default function CartPage() {
                 style={{ borderColor: 'oklch(0.2 0.03 98 / 0.1)' }}
               >
                 <span style={{ color: DARK }}>Total</span>
-                <span style={{ color: DARK }}>${totalPrice.toFixed(2)}</span>
+                <span className="tabular-nums" style={{ color: DARK }}>${totalPrice.toFixed(2)}</span>
               </div>
             </div>
 

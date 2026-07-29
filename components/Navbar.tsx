@@ -17,12 +17,12 @@ interface NavbarProps {
 }
 
 const defaultNavLinks: NavLink[] = [
-  { href: '#home', label: 'Home' },
-  { href: '#about', label: 'About' },
-  { href: '#contact', label: 'Contact' },
+  { href: '/', label: 'Home' },
+  { href: '/#about', label: 'About' },
+  { href: '/#contact', label: 'Contact' },
 ]
 
-const darkSections = ['about', 'contact'];
+const darkSections = ['contact'];
 
 export default function Navbar({
   navLinks = defaultNavLinks,
@@ -31,6 +31,7 @@ export default function Navbar({
 }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isOverDarkSection, setIsOverDarkSection] = useState(false);
+  const [activeHash, setActiveHash] = useState('');
   const pathname = usePathname();
   const { totalItems } = useCart();
   const primary = {
@@ -71,10 +72,26 @@ export default function Navbar({
     return () => { document.body.style.overflow = ''; };
   }, [isMenuOpen]);
 
-  const textColor = isOverDarkSection ? 'oklch(0.943 0.051 98.2)' : primary.main;
+  // Track current hash for active-state highlighting of in-page links
+  useEffect(() => {
+    const sync = () => setActiveHash(window.location.hash);
+    sync();
+    window.addEventListener('hashchange', sync);
+    return () => window.removeEventListener('hashchange', sync);
+  }, [pathname]);
+
+  const textColor = isOverDarkSection ? 'oklch(0.943 0.051 98.2)' : 'oklch(0.14 0.03 98)';
+  const creamText = 'oklch(0.943 0.051 98.2)';
+  const cartBadgeGradient = `linear-gradient(to bottom right, ${primary.main}, ${primary.DEFAULT})`;
 
   const isActive = (href: string) => {
     if (activeCategory) return href === `/shop/${activeCategory}`;
+    const hashIndex = href.indexOf('#');
+    if (hashIndex !== -1) {
+      const base = href.slice(0, hashIndex) || '/';
+      const hash = href.slice(hashIndex);
+      return pathname === base && activeHash === hash;
+    }
     return pathname === href;
   };
 
@@ -136,13 +153,13 @@ export default function Navbar({
 
       {/* ── Navbar ── */}
       <nav className="fixed top-0 left-0 right-0 z-50">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between gap-4 mt-6">
+        <div className="mx-auto max-w-8xl px-5 pt-4">
+          <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4">
             {/* Logo */}
-            <div className={`shrink-0 bg-transparent backdrop-blur-md rounded-full shadow-[0_25px_40px_rgba(33,33,33,0.25)] ${isOverDarkSection ? 'border border-white/30' : 'border border-background/30'}`}>
-              <div className="flex items-center h-16 px-6">
+            <div className={`justify-self-start shrink-0 bg-transparent backdrop-blur-md rounded-full shadow-[0_25px_40px_rgba(33,33,33,0.25)] ${isOverDarkSection ? 'border border-white/30' : 'border border-background/30'}`}>
+              <div className="flex items-center h-14 px-6 sm:px-7">
                 <Link href="/" className="flex-shrink-0">
-                  <span className="text-2xl font-bold hover:opacity-80 transition-all duration-300 hover:scale-105" style={{ color: primary.DEFAULT }}>
+                  <span className="text-xl font-bold hover:opacity-80 transition-all duration-300 hover:scale-105" style={{ color: primary.DEFAULT }}>
                     Clothly
                   </span>
                 </Link>
@@ -150,7 +167,7 @@ export default function Navbar({
             </div>
 
             {/* Nav Links pill - centered */}
-            <div className={`absolute left-1/2 -translate-x-1/2 bg-transparent backdrop-blur-md rounded-full shadow-[0_8px_32px_rgba(33,33,33,0.35),0_2px_8px_rgba(33,33,33,0.2)] border ${isOverDarkSection ? 'border-white/40' : 'border-black/15'}`}>
+            <div className={`justify-self-center bg-transparent backdrop-blur-md rounded-full shadow-[0_8px_32px_rgba(33,33,33,0.35),0_2px_8px_rgba(33,33,33,0.2)] border ${isOverDarkSection ? 'border-white/40' : 'border-black/15'}`}>
               <div className="flex items-center justify-between h-16 px-4">
                 {/* Desktop links */}
                 <div className="hidden md:flex items-center gap-1 w-full justify-center">
@@ -162,23 +179,24 @@ export default function Navbar({
                         href={link.href}
                         className="px-5 py-2.5 font-medium rounded-full transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:scale-105"
                         style={{
-                          color: active ? primary.DEFAULT : textColor,
-                          backgroundColor: active ? "oklch(0.3 0.1 60 / 0.15)" : "transparent",
-                          boxShadow: active ? '0 2px 8px oklch(0.3 0.1 60 / 0.15)' : 'none',
-                          border: active ? '1px solid oklch(0.3 0.1 60 / 0.3)' : '1px solid transparent',
+                          color: active ? creamText : textColor,
+                          backgroundColor: 'transparent',
+                          backgroundImage: active ? cartBadgeGradient : 'none',
+                          boxShadow: active ? '0 2px 8px rgba(33, 33, 33, 0.18)' : 'none',
+                          border: active ? '1px solid transparent' : '1px solid transparent',
                         }}
                         onMouseEnter={(e) => {
                           if (!active) {
-                            e.currentTarget.style.color = primary.DEFAULT;
-                            e.currentTarget.style.backgroundColor = "oklch(0.3 0.1 60 / 0.08)";
-                            e.currentTarget.style.boxShadow = '0 2px 8px oklch(0.3 0.1 60 / 0.1)';
-                            e.currentTarget.style.border = '1px solid oklch(0.3 0.1 60 / 0.2)';
+                            e.currentTarget.style.color = creamText;
+                            e.currentTarget.style.backgroundImage = cartBadgeGradient;
+                            e.currentTarget.style.boxShadow = '0 2px 8px rgba(33, 33, 33, 0.18)';
+                            e.currentTarget.style.border = '1px solid transparent';
                           }
                         }}
                         onMouseLeave={(e) => {
                           if (!active) {
                             e.currentTarget.style.color = textColor;
-                            e.currentTarget.style.backgroundColor = "transparent";
+                            e.currentTarget.style.backgroundImage = 'none';
                             e.currentTarget.style.boxShadow = 'none';
                             e.currentTarget.style.border = '1px solid transparent';
                           }
@@ -216,13 +234,11 @@ export default function Navbar({
               </div>
             </div>
 
-
             {/* Icons */}
-            <div className={`hidden md:flex bg-transparent backdrop-blur-md rounded-full shadow-[0_25px_40px_rgba(33,33,33,0.25)] ${isOverDarkSection ? 'border border-white/30' : 'border border-background/30'}`}>
-              <div className="flex items-center gap-2 h-16 px-4">
-                {/* Search */}
+            <div className="hidden md:flex items-center gap-3 justify-self-end">
+              <div className={`group/search flex items-center h-16 rounded-full bg-transparent backdrop-blur-md shadow-[0_25px_40px_rgba(33,33,33,0.25)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] overflow-hidden ${isOverDarkSection ? 'border border-white/30' : 'border border-background/30'} w-14 hover:w-72 focus-within:w-72`}>
                 <button
-                  className="p-2 rounded-lg transition-all duration-300 hover:bg-white/10"
+                  className="shrink-0 h-16 w-14 flex items-center justify-center rounded-full transition-colors duration-300 hover:bg-white/10"
                   aria-label="Search"
                   style={{ color: textColor }}
                 >
@@ -231,39 +247,51 @@ export default function Navbar({
                   </svg>
                 </button>
 
-                {/* Cart */}
-                <Link
-                  href="/cart"
-                  className="p-2 rounded-lg transition-all duration-300 hover:bg-white/10 relative"
-                  aria-label="Cart"
+                <input
+                  type="search"
+                  placeholder="Search products"
+                  aria-label="Search products"
+                  className="w-0 min-w-0 flex-1 bg-transparent text-sm font-medium outline-none transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:opacity-70 group-hover/search:w-full group-focus-within/search:w-full"
                   style={{ color: textColor }}
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                  </svg>
-                  {totalItems > 0 && (
-                    <span
-                      className="absolute top-1 right-1 text-[10px] font-semibold min-w-4 h-4 flex items-center justify-center rounded-lg px-1"
-                      style={{
-                        background: `linear-gradient(to bottom right, ${primary.main}, ${primary.DEFAULT})`,
-                        color: 'oklch(0.943 0.051 98.2)',
-                      }}
-                    >
-                      {totalItems}
-                    </span>
-                  )}
-                </Link>
+                />
+              </div>
 
-                {/* Account */}
-                <button
-                  className="p-2 rounded-lg transition-all duration-300 hover:bg-white/10"
-                  aria-label="Account"
-                  style={{ color: textColor }}
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </button>
+              <div className={`bg-transparent backdrop-blur-md rounded-full shadow-[0_25px_40px_rgba(33,33,33,0.25)] ${isOverDarkSection ? 'border border-white/30' : 'border border-background/30'}`}>
+                <div className="flex items-center gap-2 h-16 px-4">
+                  {/* Cart */}
+                  <Link
+                    href="/cart"
+                    className="p-2 rounded-lg transition-all duration-300 hover:bg-white/10 relative"
+                    aria-label="Cart"
+                    style={{ color: textColor }}
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    {totalItems > 0 && (
+                      <span
+                        className="absolute top-1 right-1 text-[10px] font-semibold min-w-4 h-4 flex items-center justify-center rounded-lg px-1"
+                        style={{
+                          background: `linear-gradient(to bottom right, ${primary.main}, ${primary.DEFAULT})`,
+                          color: 'oklch(0.943 0.051 98.2)',
+                        }}
+                      >
+                        {totalItems}
+                      </span>
+                    )}
+                  </Link>
+
+                  {/* Account */}
+                  <button
+                    className="p-2 rounded-lg transition-all duration-300 hover:bg-white/10"
+                    aria-label="Account"
+                    style={{ color: textColor }}
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

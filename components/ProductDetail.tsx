@@ -187,7 +187,7 @@ its on the page's cream chrome, outside the dark panel */}
                   {categoryLabel}
                 </span>
                 <h1
-                  className="text-3xl font-extrabold leading-[1.05] md:text-4xl"
+                  className="text-3xl font-extrabold leading-[1.05] md:text-4xl text-balance"
                   style={{ color: CREAM }}
                 >
                   {product.name}
@@ -232,12 +232,12 @@ its on the page's cream chrome, outside the dark panel */}
               </div>
 
               <div>
-                <div className="text-3xl font-bold" style={{ color: CREAM }}>
+                <div className="text-3xl font-bold tabular-nums" style={{ color: CREAM }}>
                   ${product.price.toFixed(2)}
                 </div>
               </div>
 
-              <p className="text-sm leading-relaxed" style={{ color: CREAM_MUTED }}>
+              <p className="text-sm leading-relaxed max-w-prose" style={{ color: CREAM_MUTED }}>
                 {product.description ?? fallbackDescription}
               </p>
             </motion.div>

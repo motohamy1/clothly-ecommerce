@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getProductById, getRelatedProducts } from '@/lib/products';
+import { backendFetch } from '@/lib/backend';
 
 interface ProductRouteProps {
   params: Promise<{ id: string }>;
@@ -7,11 +7,11 @@ interface ProductRouteProps {
 
 export async function GET(_request: Request, { params }: ProductRouteProps) {
   const { id } = await params;
-  const product = getProductById(id);
-
-  if (!product) {
-    return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+  try {
+    const data = await backendFetch('/shop/products/' + encodeURIComponent(id));
+    return NextResponse.json(data, { status: 200 });
+  } catch (error) {
+    const status = error instanceof Error && error.message.toLowerCase().includes('not found') ? 404 : 502;
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Backend request failed' }, { status });
   }
-
-  return NextResponse.json({ product, related: getRelatedProducts(product, 6) });
 }

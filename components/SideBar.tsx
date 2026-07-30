@@ -3,7 +3,14 @@
 import React, { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation';
 import styled from 'styled-components';
-import { getProductSection } from '@/lib/products';
+// Slug-prefix based: the seeded catalog and the admin form's slug validator both require a section prefix.
+// If a future product has a different prefix, the sidebar will simply not highlight a section for it (fail-soft).
+function getSectionFromSlug(slug: string): 'men' | 'women' | 'kids' | null {
+  if (slug.startsWith('men-')) return 'men';
+  if (slug.startsWith('women-')) return 'women';
+  if (slug.startsWith('kids-')) return 'kids';
+  return null;
+}
 
 const items = [
     { label: 'Men Shop', id: 'men-collection', href: '/men' },
@@ -30,7 +37,7 @@ function SideBar() {
         if (!pathname) return -1;
         const sectionMatch = pathname.match(PRODUCT_ROUTE_RE);
         if (sectionMatch) {
-            const section = getProductSection(sectionMatch[1]);
+            const section = getSectionFromSlug(sectionMatch[1]);
             if (section) {
                 return items.findIndex((item) => item.href === `/${section}`);
             }

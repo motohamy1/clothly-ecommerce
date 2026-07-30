@@ -1,10 +1,11 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getProductById, getRelatedProducts } from '@/lib/products';
+import { backendFetch } from '@/lib/backend';
 import ProductDetail from '@/components/ProductDetail';
 import ClothingCard from '@/components/ClothingCard';
 import ShoeCard from '@/components/ShoeCard';
 import GsapCarousel from '@/components/GsapCarousel';
+import type { Product } from '@/lib/products';
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -12,7 +13,8 @@ interface ProductPageProps {
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { id } = await params;
-  const product = getProductById(id);
+  const data = await backendFetch('/shop/products/' + encodeURIComponent(id)).catch(() => null);
+  const product = data?.product as Product | undefined;
 
   return {
     title: product ? `${product.name} — Clothly` : 'Product Not Found — Clothly',
@@ -22,13 +24,18 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params;
-  const product = getProductById(id);
+  let data: { product: Product; related: Product[] };
 
-  if (!product) {
+  try {
+    data = await backendFetch('/shop/products/' + encodeURIComponent(id));
+  } catch {
     notFound();
   }
 
-  const related = getRelatedProducts(product, 6);
+  const product = data?.product;
+  if (!product) notFound();
+
+  const related = data?.related ?? [];
 
   return (
     <div className="pb-24">

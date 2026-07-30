@@ -1,25 +1,29 @@
-'use client';
-
 import React from 'react';
 import styled from 'styled-components';
 import ClothingCard from '@/components/ClothingCard';
 import ShoeCard from '@/components/ShoeCard';
 import GsapCarousel from '@/components/GsapCarousel';
-import { getCollection, type ProductSection } from '@/lib/products';
+import { backendFetch } from '@/lib/backend';
+import { collectionMeta } from '@/lib/collection-meta';
+import type { ProductSection } from '@/lib/products';
 
 interface CategoryPageProps {
   section: ProductSection;
 }
 
-function CategoryPage({ section }: CategoryPageProps) {
-  const collection = getCollection(section);
+async function CategoryPage({ section }: CategoryPageProps) {
+  const data = await backendFetch('/shop/' + section);
+  const collection = data?.collection;
+  const meta = collectionMeta[section];
+
+  if (!collection) return null;
 
   return (
     <StyledWrapper>
       <div id={`${section}-collection`}>
-        <span className="eyebrow">{collection.label}</span>
+        <span className="eyebrow">{meta.label}</span>
         <h1 className="page-title">
-          {collection.headline.split('\n').map((line, index) => (
+          {meta.headline.split('\n').map((line, index) => (
             <React.Fragment key={line}>
               {index > 0 && <br />}
               {line}
@@ -30,7 +34,7 @@ function CategoryPage({ section }: CategoryPageProps) {
         <section className="section">
           <h2 className="section-title">Clothing</h2>
           <GsapCarousel itemWidth={260} gap={20}>
-            {collection.groups.clothing.map((p) => (
+            {collection.groups.clothing.map((p: any) => (
               <ClothingCard key={p.id} product={p} />
             ))}
           </GsapCarousel>
@@ -39,7 +43,7 @@ function CategoryPage({ section }: CategoryPageProps) {
         <section className="section">
           <h2 className="section-title">Outerwear</h2>
           <GsapCarousel itemWidth={260} gap={20}>
-            {collection.groups.outerwear.map((p) => (
+            {collection.groups.outerwear.map((p: any) => (
               <ClothingCard key={p.id} product={p} />
             ))}
           </GsapCarousel>
@@ -48,7 +52,7 @@ function CategoryPage({ section }: CategoryPageProps) {
         <section className="section">
           <h2 className="section-title">Shoes</h2>
           <GsapCarousel itemWidth={180} gap={24}>
-            {collection.groups.shoes.map((p) => (
+            {collection.groups.shoes.map((p: any) => (
               <ShoeCard key={p.id} product={p} />
             ))}
           </GsapCarousel>

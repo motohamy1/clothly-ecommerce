@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
-import { allProducts, catalog, getProductsBySection, type ProductSection } from '@/lib/products';
+import { backendFetch } from '@/lib/backend';
+import type { ProductSection } from '@/lib/products';
 
 const sections = new Set<ProductSection>(['men', 'women', 'kids']);
 
-export function GET(request: Request) {
+export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const section = searchParams.get('section') as ProductSection | null;
 
@@ -12,8 +13,10 @@ export function GET(request: Request) {
       return NextResponse.json({ error: 'Unknown product section' }, { status: 400 });
     }
 
-    return NextResponse.json({ collection: catalog[section], products: getProductsBySection(section) });
+    const data = await backendFetch('/shop/' + section);
+    return NextResponse.json(data, { status: 200 });
   }
 
-  return NextResponse.json({ catalog, products: allProducts });
+  const data = await backendFetch('/shop/products');
+  return NextResponse.json(data, { status: 200 });
 }

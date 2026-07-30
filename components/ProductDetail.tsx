@@ -97,7 +97,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   }, []);
 
   const handleAddToCart = () => {
-    addItem(product, undefined, selectedColor.colorName);
+    addItem(product, selectedSize ?? product.sizes[0], selectedColor.colorName);
     setJustAdded(true);
     if (addTimeoutRef.current) clearTimeout(addTimeoutRef.current);
     addTimeoutRef.current = setTimeout(() => setJustAdded(false), 1800);

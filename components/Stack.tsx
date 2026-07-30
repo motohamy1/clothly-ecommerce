@@ -144,7 +144,7 @@ export default function Stack({
 
   useEffect(() => {
     if (cards.length) {
-      setStack(cards.map((content, index) => ({ id: index + 1, content })));
+      queueMicrotask(() => setStack(cards.map((content, index) => ({ id: index + 1, content }))));
     }
   }, [cards]);
 
@@ -181,7 +181,7 @@ export default function Stack({
       onMouseLeave={() => pauseOnHover && setIsPaused(false)}
     >
       {stack.map((card, index) => {
-        const randomRotate = randomRotation ? Math.random() * 10 - 5 : 0;
+        const randomRotate = randomRotation ? ((card.id * 37) % 10) - 5 : 0;
         return (
           <CardRotate
             key={card.id}

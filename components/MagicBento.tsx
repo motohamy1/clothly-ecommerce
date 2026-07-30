@@ -29,6 +29,8 @@ export interface BentoProps {
   clickEffect?: boolean;
   enableMagnetism?: boolean;
   fullWidth?: boolean;
+  tray?: boolean;
+  cardMinHeight?: string;
 }
 
 const DEFAULT_PARTICLE_COUNT = 12;
@@ -499,9 +501,10 @@ const BentoCardGrid: React.FC<{
   children: React.ReactNode;
   gridRef?: React.RefObject<HTMLDivElement | null>;
   fullWidth?: boolean;
-}> = ({ children, gridRef, fullWidth = false }) => (
+  tray?: boolean;
+}> = ({ children, gridRef, fullWidth = false, tray = false }) => (
   <div
-    className={`bento-section grid gap-2 p-3 select-none relative ${fullWidth ? 'w-full' : 'max-w-[54rem]'}`}
+    className={`bento-section grid gap-2 p-3 select-none relative ${fullWidth ? 'w-full' : 'max-w-[54rem]'} ${tray ? 'bento-section--tray' : ''}`}
     style={{ fontSize: 'clamp(1rem, 0.9rem + 0.5vw, 1.5rem)' }}
     ref={gridRef}
   >
@@ -537,7 +540,9 @@ const MagicBento: React.FC<BentoProps> = ({
   glowColor = DEFAULT_GLOW_COLOR,
   clickEffect = true,
   enableMagnetism = true,
-  fullWidth = false
+  fullWidth = false,
+  tray = false,
+  cardMinHeight = 'min-h-[160px] sm:min-h-[180px] md:min-h-[200px] lg:min-h-[220px]',
 }) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const isMobile = useMobileDetection();
@@ -561,6 +566,15 @@ const MagicBento: React.FC<BentoProps> = ({
             --purple-primary: rgba(132, 0, 255, 1);
             --purple-glow: rgba(132, 0, 255, 0.2);
             --purple-border: rgba(132, 0, 255, 0.8);
+          }
+          
+          .bento-section--tray {
+            border: 1px solid oklch(0.2 0.03 98 / 0.12);
+            border-radius: 2rem;
+            box-shadow:
+              inset 0 1px 1px rgba(255, 255, 255, 0.5),
+              0 30px 60px -20px rgba(60, 40, 20, 0.12),
+              0 8px 24px -8px rgba(60, 40, 20, 0.06);
           }
           
           .card-responsive {
@@ -629,7 +643,7 @@ const MagicBento: React.FC<BentoProps> = ({
             mask-composite: exclude;
             pointer-events: none;
             opacity: 1;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s cubic-bezier(0.32, 0.72, 0, 1);
             z-index: 1;
           }
           
@@ -676,6 +690,9 @@ const MagicBento: React.FC<BentoProps> = ({
           }
           
           @media (max-width: 599px) {
+            .card-responsive {
+              gap: 1.5rem;
+            }
             .card-responsive:not(.card-responsive--featured) {
               grid-template-columns: 1fr;
               width: 90%;
@@ -706,11 +723,11 @@ const MagicBento: React.FC<BentoProps> = ({
         />
       )}
 
-      <BentoCardGrid gridRef={gridRef} fullWidth={fullWidth}>
+      <BentoCardGrid gridRef={gridRef} fullWidth={fullWidth} tray={tray}>
         <div className={`card-responsive ${isFeaturedLayout ? 'card-responsive--featured' : ''} ${fullWidth ? 'card-responsive--full' : ''} grid gap-2`}>
           {resolvedCards.map((card, index) => {
             const cardTextColor = card.textColor || 'var(--white)';
-            const baseClassName = `card flex flex-col justify-between relative aspect-[4/3] min-h-[200px] w-full max-w-full p-5 rounded-[20px] border border-solid font-light overflow-hidden transition-colors duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(0,0,0,0.15)] ${
+            const baseClassName = `card flex flex-col justify-between relative ${cardMinHeight} w-full max-w-full p-4 md:p-5 rounded-[16px] border border-solid font-light overflow-hidden transition-[transform,box-shadow,background-color,border-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(0,0,0,0.15)] ${
               isFeaturedLayout ? 'aspect-auto min-h-[clamp(26rem,60vw,38rem)] p-6 md:p-8' : ''
             } ${
               enableBorderGlow ? 'card--border-glow' : ''
@@ -734,7 +751,7 @@ const MagicBento: React.FC<BentoProps> = ({
                 : {
                     backgroundColor: card.color || 'var(--background-dark)',
                   }),
-            } as React.CSSProperties;
+            } as unknown as React.CSSProperties;
 
             if (enableStars) {
               return (

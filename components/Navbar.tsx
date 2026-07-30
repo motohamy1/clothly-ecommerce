@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from "next/navigation";
 import { useCart } from '@/lib/cart-context';
@@ -22,7 +22,7 @@ const defaultNavLinks: NavLink[] = [
   { href: '/#contact', label: 'Contact' },
 ]
 
-const darkSections = ['contact'];
+const darkSections: string[] = [];
 
 export default function Navbar({
   navLinks = defaultNavLinks,
@@ -32,6 +32,7 @@ export default function Navbar({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isOverDarkSection, setIsOverDarkSection] = useState(false);
   const [activeHash, setActiveHash] = useState('');
+  const isClickScrollingRef = useRef(false);
   const pathname = usePathname();
   const { totalItems } = useCart();
   const primary = {
@@ -41,30 +42,51 @@ export default function Navbar({
 
   useEffect(() => {
     const handleScroll = () => {
-      const navbarHeight = 100;
+      const navbarHeight = 120;
       const scrollPosition = window.scrollY + navbarHeight;
 
       const sections = document.querySelectorAll('section[id]');
       let foundDarkSection = false;
+      let currentSectionId = '';
 
-      sections.forEach((section) => {
-        const sectionTop = (section as HTMLElement).offsetTop;
-        const sectionHeight = (section as HTMLElement).offsetHeight;
-        const sectionId = section.getAttribute('id') || '';
+      if (window.scrollY < 100) {
+        currentSectionId = 'home';
+      } else {
+        sections.forEach((section) => {
+          const sectionTop = (section as HTMLElement).offsetTop;
+          const sectionHeight = (section as HTMLElement).offsetHeight;
+          const sectionId = section.getAttribute('id') || '';
 
-        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-          foundDarkSection = darkSections.includes(sectionId);
-        }
-      });
+          if (scrollPosition >= sectionTop - 50 && scrollPosition < sectionTop + sectionHeight - 50) {
+            currentSectionId = sectionId;
+            if (darkSections.includes(sectionId)) {
+              foundDarkSection = true;
+            }
+          }
+        });
+      }
 
       setIsOverDarkSection(foundDarkSection);
+
+      if (pathname === '/' && !isClickScrollingRef.current) {
+        const targetHash = (currentSectionId === 'home' || !currentSectionId) ? '' : `#${currentSectionId}`;
+        const currentHash = window.location.hash;
+
+        if (currentHash !== targetHash) {
+          const newUrl = targetHash
+            ? `${window.location.pathname}${window.location.search}${targetHash}`
+            : `${window.location.pathname}${window.location.search}`;
+          window.history.replaceState(null, '', newUrl);
+          setActiveHash(targetHash);
+        }
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [pathname]);
 
   // Lock body scroll when overlay is open
   useEffect(() => {
@@ -80,6 +102,37 @@ export default function Navbar({
     return () => window.removeEventListener('hashchange', sync);
   }, [pathname]);
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    setIsMenuOpen(false);
+    const hashIndex = href.indexOf('#');
+    if (hashIndex !== -1) {
+      const base = href.slice(0, hashIndex) || '/';
+      const hash = href.slice(hashIndex);
+      const targetId = hash.replace('#', '');
+      const element = document.getElementById(targetId);
+
+      if (pathname === base && element) {
+        e.preventDefault();
+        isClickScrollingRef.current = true;
+        setActiveHash(hash);
+        window.history.pushState(null, '', href);
+        element.scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => {
+          isClickScrollingRef.current = false;
+        }, 1000);
+      }
+    } else if (href === '/' && pathname === '/') {
+      e.preventDefault();
+      isClickScrollingRef.current = true;
+      setActiveHash('');
+      window.history.pushState(null, '', '/');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => {
+        isClickScrollingRef.current = false;
+      }, 1000);
+    }
+  };
+
   const textColor = isOverDarkSection ? 'oklch(0.943 0.051 98.2)' : 'oklch(0.14 0.03 98)';
   const creamText = 'oklch(0.943 0.051 98.2)';
   const cartBadgeGradient = `linear-gradient(to bottom right, ${primary.main}, ${primary.DEFAULT})`;
@@ -91,6 +144,9 @@ export default function Navbar({
       const base = href.slice(0, hashIndex) || '/';
       const hash = href.slice(hashIndex);
       return pathname === base && activeHash === hash;
+    }
+    if (href === '/') {
+      return pathname === '/' && (activeHash === '' || activeHash === '#home');
     }
     return pathname === href;
   };
@@ -134,7 +190,7 @@ export default function Navbar({
               <Link
                 key={link.href}
                 href={link.href}
-                onClick={() => setIsMenuOpen(false)}
+                onClick={(e) => handleNavClick(e, link.href)}
                 className={`text-4xl font-bold transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
                   ${isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
                 style={{
@@ -158,7 +214,7 @@ export default function Navbar({
             {/* Logo */}
             <div className={`justify-self-start shrink-0 bg-transparent backdrop-blur-md rounded-full shadow-[0_25px_40px_rgba(33,33,33,0.25)] ${isOverDarkSection ? 'border border-white/30' : 'border border-background/30'}`}>
               <div className="flex items-center h-14 px-6 sm:px-7">
-                <Link href="/" className="flex-shrink-0">
+                <Link href="/" onClick={(e) => handleNavClick(e, '/')} className="flex-shrink-0">
                   <span className="text-xl font-bold hover:opacity-80 transition-all duration-300 hover:scale-105" style={{ color: primary.DEFAULT }}>
                     Clothly
                   </span>
@@ -177,6 +233,7 @@ export default function Navbar({
                       <Link
                         key={link.href}
                         href={link.href}
+                        onClick={(e) => handleNavClick(e, link.href)}
                         className="px-5 py-2.5 font-medium rounded-full transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:scale-105"
                         style={{
                           color: active ? creamText : textColor,

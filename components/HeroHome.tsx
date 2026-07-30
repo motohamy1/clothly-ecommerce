@@ -53,7 +53,8 @@ export default function HeroHome() {
 
     return (
         <section
-            className="font-sans flex flex-col md:flex-row justify-between min-h-screen w-full px-6 md:px-16 lg:px-24 gap-6 md:gap-0 overflow-x-hidden"
+            id="home"
+            className="font-sans flex flex-col md:flex-row justify-between min-h-[calc(100vh-8.5rem)] w-full px-6 md:px-16 lg:px-24 gap-6 md:gap-0 overflow-x-hidden scroll-mt-24 pb-4 md:pb-6"
             style={{ background: 'oklch(0.943 0.051 98.2)' }}
         >
             {/* ── Left: editorial copy ── */}

@@ -19,6 +19,7 @@
 **Goal:** Add an authenticated admin UI for managing products and migrate the storefront off the static catalog onto the live database so admin changes immediately reflect on the public site.
 
 **Scope:**
+
 - Mongoose `User` model (email, bcrypt-hashed password, `role: 'admin' | 'customer'`)
 - Hand-rolled JWT auth: httpOnly cookie + Next.js middleware gating `/admin/**` by role
 - First admin account bootstrapped via seed script (no public admin signup)
@@ -29,13 +30,25 @@
 - Initial dataset seeded into MongoDB via existing `/shop/seed` endpoint from `lib/products.ts` catalog
 
 **Out of scope (deferred to follow-up phase):**
+
 - Customer-facing signup/login UI (uses the same User/auth foundation laid here)
 - Cloud image storage (Cloudinary/S3)
 - Order history, checkout, payment
 
 **Depends on:** M1 (Storefront Foundation)
 
-**Plans:** 0 plans (run `/gsd-plan-phase 1` to break down)
+**Plans:** 4/8 plans executed
+
+Plans:
+
+- [x] 01-01-PLAN.md — Substrate: env files, install deps, env-var boot handling, tsconfig backend exclude
+- [x] 01-02-PLAN.md — Server-side auth: User model, JWT, login/logout endpoints, seed:admin, /api/auth proxies
+- [x] 01-03-PLAN.md — Auth UI: middleware, login page, admin chrome, shadcn install, sign-out
+- [x] 01-04-PLAN.md — Admin API auth gate + /api/admin/upload route
+- [x] 01-05-PLAN.md — Admin dashboard + product list with delete confirm
+- [x] 01-06-PLAN.md — Admin product form (create + edit, 4 tabs, image dropzone)
+- [x] 01-07-PLAN.md — Storefront migration: backend reads, seed:products, error boundary
+- [x] 01-08-PLAN.md — Hygiene verification + full 20-step manual UAT pass
 
 ## Quick Tasks
 

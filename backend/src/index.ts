@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import clothesRouter from './routers/clothes';
+import authRouter from './routers/auth';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -20,6 +21,7 @@ if (!process.env.MONGODB_URI && process.env.NODE_ENV === 'production') {
 
 app.use(express.json());
 app.use('/shop', clothesRouter);
+app.use('/auth', authRouter);
 
 app.get('/health', (_req, res) => {
   res.json({ ok: true, service: 'clothly-backend' });

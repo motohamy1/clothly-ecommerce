@@ -37,7 +37,7 @@
 
 **Depends on:** M1 (Storefront Foundation)
 
-**Plans:** 4/8 plans executed
+**Plans:** 8/8 plans complete
 
 Plans:
 

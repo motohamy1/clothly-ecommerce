@@ -5,6 +5,7 @@ import ShoeCard from '@/components/ShoeCard';
 import GsapCarousel from '@/components/GsapCarousel';
 import { backendFetch } from '@/lib/backend';
 import { collectionMeta } from '@/lib/collection-meta';
+import { catalog } from '@/lib/product-seeds';
 import type { ProductSection } from '@/lib/products';
 
 interface CategoryPageProps {
@@ -12,7 +13,16 @@ interface CategoryPageProps {
 }
 
 async function CategoryPage({ section }: CategoryPageProps) {
-  const data = await backendFetch('/shop/' + section);
+  let data: { collection?: any };
+
+  try {
+    data = await backendFetch('/shop/' + section);
+  } catch {
+    // Dev fallback: when the Express backend is unreachable,
+    // render from the local seed catalog instead of crashing.
+    data = { collection: catalog[section] };
+  }
+
   const collection = data?.collection;
   const meta = collectionMeta[section];
 

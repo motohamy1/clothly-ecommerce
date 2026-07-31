@@ -14,8 +14,8 @@ export default async function LoginPage({ searchParams }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-[#FAF7F2] px-4">
+    <div className="min-h-[calc(100vh-10rem)] flex items-center justify-center bg-[#f5edc7] px-4">
       <LoginForm denied={params.denied === '1'} expired={params.expired === '1'} />
-    </main>
+    </div>
   );
 }

@@ -3,8 +3,8 @@ import bcrypt from 'bcrypt';
 import { UserModel } from '../models/user';
 
 async function main() {
-  const adminEmail = process.env.ADMIN_EMAIL;
-  const adminPassword = process.env.ADMIN_PASSWORD;
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@clothly.test';
+  const adminPassword = process.env.ADMIN_PASSWORD || 'clothly-admin-pass-12';
 
   if (!adminEmail || !adminPassword) {
     console.error('ADMIN_EMAIL and ADMIN_PASSWORD are required');

@@ -38,6 +38,17 @@ export async function requireAdmin(): Promise<SessionUser> {
   return session;
 }
 
+export async function requireAuth(): Promise<SessionUser> {
+  const session = await getSession();
+  if (!session) {
+    throw new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+  return session;
+}
+
 export async function backendFetchRaw(path: string, init?: RequestInit): Promise<Response> {
   const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
   return fetch(`${BACKEND_URL}${path}`, {

@@ -28,14 +28,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#f5edc7]`}
       >
         <Providers>
           <Navbar />
           <div className="hidden md:block">
             <SideBar />
           </div>
-          <main className="min-h-screen md:ml-[240px] pt-[8.5rem] px-4 md:px-8">
+          <main className="min-h-screen md:ml-[240px] pt-[8.5rem] px-4 md:px-8 bg-[#f5edc7]">
             {children}
           </main>
         </Providers>

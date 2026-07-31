@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -11,11 +11,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-interface LoginFormProps {
-  denied?: boolean;
-  expired?: boolean;
-}
-
 const loginSchema = z.object({
   email: z.string().email('Enter a valid email address.'),
   password: z.string().min(1, 'This field is required.'),
@@ -23,8 +18,10 @@ const loginSchema = z.object({
 
 type LoginValues = z.infer<typeof loginSchema>;
 
-export default function LoginForm({ denied, expired }: LoginFormProps) {
+export default function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get('next') ?? '/';
   const [formError, setFormError] = useState<string | null>(null);
 
   const {
@@ -45,15 +42,19 @@ export default function LoginForm({ denied, expired }: LoginFormProps) {
       });
 
       if (res.ok) {
-        router.push('/admin');
+        router.push(next);
+        router.refresh();
         return;
       }
 
+      const data = await res.json().catch(() => ({}));
       setFormError(
-        'That email and password don\'t match. Try again, or reach out if you\'ve lost access.',
+        typeof data.error === 'string'
+          ? data.error
+          : 'That email and password don\'t match. Try again.',
       );
     } catch {
-      setFormError('The shop can\'t sign anyone in right now. Try again in a few minutes, or contact the team.');
+      setFormError('The shop can\'t sign anyone in right now. Try again in a few minutes.');
     }
   };
 
@@ -62,19 +63,11 @@ export default function LoginForm({ denied, expired }: LoginFormProps) {
       <CardContent className="p-8">
         <div className="h-[2px] bg-[#B8763A] mb-6" />
 
-        {(denied || expired) && (
-          <div className="mb-6 p-3 rounded-md bg-[rgba(139,46,31,0.08)] text-[13px] text-[#8B2E1F]">
-            {denied
-              ? 'You don\'t have permission to access this area.'
-              : 'Your session has expired. Please sign in again.'}
-          </div>
-        )}
-
         <h1 className="text-[28px] font-medium leading-[1.25] mb-2 text-[#1A1814]">
-          Sign in to manage the shop.
+          Welcome back.
         </h1>
         <p className="text-[13px] text-[rgba(26,24,20,0.6)] mb-6">
-          Enter the email and password you set up with the team.
+          Sign in to your Clothly account.
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -85,7 +78,6 @@ export default function LoginForm({ denied, expired }: LoginFormProps) {
               type="email"
               autoComplete="email"
               placeholder="you@example.com"
-              className="!bg-white border-[rgba(26,24,20,0.15)] text-[#1A1814]"
               {...register('email')}
             />
             {errors.email && (
@@ -100,7 +92,6 @@ export default function LoginForm({ denied, expired }: LoginFormProps) {
               type="password"
               autoComplete="current-password"
               placeholder="Enter your password"
-              className="!bg-white border-[rgba(26,24,20,0.15)] text-[#1A1814]"
               {...register('password')}
             />
             {errors.password && (
@@ -121,8 +112,12 @@ export default function LoginForm({ denied, expired }: LoginFormProps) {
           </Button>
         </form>
 
-        <p className="mt-6 text-[13px] text-[rgba(26,24,20,0.6)]">
-          Need help? Reach the team at hello@clothly.test.
+        <p className="mt-6 text-[13px] text-[rgba(26,24,20,0.6)] text-center">
+          Don&apos;t have an account?{' '}
+          <a href="/signup" className="text-[#B8763A] underline underline-offset-2">
+            Create one
+          </a>
+          .
         </p>
       </CardContent>
     </Card>

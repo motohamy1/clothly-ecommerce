@@ -13,7 +13,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <ToastProvider>
-      <div className="flex min-h-screen bg-[#FAF7F2]">
+      <div className="flex min-h-screen bg-[#f5edc7]">
         <AdminSidebar />
         <div className="flex-1">
           <header className="flex justify-end items-center gap-4 border-b border-[rgba(26,24,20,0.08)] px-8 h-16">

@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { gsap } from 'gsap';
+import { useReducedMotion } from '@/lib/use-reduced-motion';
 
 interface BounceCardsProps {
   className?: string;
@@ -34,7 +35,11 @@ export default function BounceCards({
   enableHover = false
 }: BounceCardsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
+
   useEffect(() => {
+    if (reduceMotion) return;
+
     const ctx = gsap.context(() => {
       gsap.fromTo(
         '.card',

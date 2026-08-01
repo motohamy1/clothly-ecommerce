@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { gsap } from 'gsap';
 import styled from 'styled-components';
+import { useReducedMotion } from '@/lib/use-reduced-motion';
 
 interface GsapCarouselProps {
   children: React.ReactNode;
@@ -48,6 +49,7 @@ export default function GsapCarousel({ children, itemWidth, gap }: GsapCarouselP
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [store] = useState(createCarouselStore);
+  const reduceMotion = useReducedMotion();
 
   const { canPrev, canNext } = useSyncExternalStore(
     store.subscribe,
@@ -86,6 +88,12 @@ export default function GsapCarousel({ children, itemWidth, gap }: GsapCarouselP
       direction === 'prev'
         ? Math.min(0, x + step)
         : Math.max(-max, x - step);
+
+    if (reduceMotion) {
+      gsap.set(trackRef.current, { x: targetX });
+      store.set(measure());
+      return;
+    }
 
     gsap.to(trackRef.current, {
       x: targetX,

@@ -2,6 +2,8 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { UserModel } from '../models/user';
+import { rateLimit } from '../middleware/rate-limit';
+import { verifyUserExists } from '../middleware/auth';
 
 const router = express.Router();
 
@@ -15,7 +17,7 @@ function parseCookieHeader(header: string | undefined, name: string): string | n
   return null;
 }
 
-router.post('/login', async (req, res, next) => {
+router.post('/login', rateLimit(10, 60_000), async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -56,7 +58,7 @@ router.post('/login', async (req, res, next) => {
   }
 });
 
-router.post('/signup', async (req, res, next) => {
+router.post('/signup', rateLimit(10, 60_000), async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -117,7 +119,12 @@ router.get('/me', async (req, res, next) => {
       return res.status(200).json({ user: null });
     }
 
-    return res.status(200).json({ user: { email: payload.email, role: payload.role } });
+    const user = await UserModel.findById(payload.sub).select('email role').lean();
+    if (!user) {
+      return res.status(200).json({ user: null });
+    }
+
+    return res.status(200).json({ user: { email: user.email, role: user.role } });
   } catch (err) {
     return next(err);
   }

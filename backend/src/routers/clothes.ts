@@ -1,6 +1,7 @@
 import express from 'express';
 import { ProductModel, type ProductCategory, type ProductGroup, type ProductSection } from '../models/product';
 import { productSeeds } from '../data/products';
+import { requireAdmin } from '../middleware/auth';
 
 const router = express.Router();
 const sections = new Set<ProductSection>(['men', 'women', 'kids']);
@@ -86,7 +87,7 @@ router.get('/products/:id', async (req, res, next) => {
   }
 });
 
-router.post('/products', async (req, res, next) => {
+router.post('/products', requireAdmin, async (req, res, next) => {
   try {
     const payload = productPayload(req.body);
     const validationError = validateProductPayload(payload);
@@ -107,7 +108,7 @@ router.post('/products', async (req, res, next) => {
   }
 });
 
-router.put('/products/:id', async (req, res, next) => {
+router.put('/products/:id', requireAdmin, async (req, res, next) => {
   try {
     const payload = productPayload({ ...req.body, id: req.params.id });
     const validationError = validateProductPayload(payload);
@@ -126,7 +127,7 @@ router.put('/products/:id', async (req, res, next) => {
   }
 });
 
-router.delete('/products/:id', async (req, res, next) => {
+router.delete('/products/:id', requireAdmin, async (req, res, next) => {
   try {
     const product = await ProductModel.findOneAndDelete({ id: req.params.id });
     if (!product) return res.status(404).json({ error: 'Product not found' });
@@ -171,7 +172,7 @@ router.get('/:section/:id', async (req, res, next) => {
   }
 });
 
-router.post('/seed', async (_req, res, next) => {
+router.post('/seed', requireAdmin, async (_req, res, next) => {
   try {
     const operations = productSeeds.map((seed) => ({
       updateOne: {

@@ -154,7 +154,13 @@ export default function Navbar({
 
   const overlayLinks = [
     ...navLinks,
-    ...(showShopLink ? [{ href: '/shop', label: 'Shop' }] : []),
+    ...(showShopLink
+      ? [
+          { href: '/men', label: 'Men' },
+          { href: '/women', label: 'Women' },
+          { href: '/kids', label: 'Kids' },
+        ]
+      : []),
   ];
 
   return (

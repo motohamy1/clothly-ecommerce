@@ -62,3 +62,13 @@ next-env.d.ts
 # planning
 /.planning
 .planning
+
+# tool configs
+.idea/
+.impeccable/
+.commandcode/
+/.commandcode
+installer.sh
+/public/women/download.png
+/public/women/download%20(1).png
+/public/women/women-shoes/download%20(2).png

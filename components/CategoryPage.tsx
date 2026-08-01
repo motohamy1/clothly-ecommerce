@@ -14,12 +14,13 @@ interface CategoryPageProps {
 
 async function CategoryPage({ section }: CategoryPageProps) {
   let data: { collection?: any };
+  let backendError: string | null = null;
 
   try {
     data = await backendFetch('/shop/' + section);
-  } catch {
-    // Dev fallback: when the Express backend is unreachable,
-    // render from the local seed catalog instead of crashing.
+  } catch (err: any) {
+    console.error(`[clothly] backend unreachable for /shop/${section}:`, err.message);
+    backendError = `Backend unreachable. Showing fallback catalog. (${err.message})`;
     data = { collection: catalog[section] };
   }
 
@@ -30,6 +31,7 @@ async function CategoryPage({ section }: CategoryPageProps) {
 
   return (
     <StyledWrapper>
+      {backendError && <div className="backend-error">{backendError}</div>}
       <div id={`${section}-collection`}>
         <span className="eyebrow">{meta.label}</span>
         <h1 className="page-title">
@@ -73,6 +75,16 @@ async function CategoryPage({ section }: CategoryPageProps) {
 }
 
 const StyledWrapper = styled.div`
+  .backend-error {
+    background: oklch(0.35 0.12 28);
+    color: oklch(0.92 0.06 75);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid oklch(0.45 0.12 28 / 0.4);
+  }
+
   .eyebrow {
     display: inline-block;
     font-size: 0.65rem;

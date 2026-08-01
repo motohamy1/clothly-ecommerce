@@ -3,8 +3,8 @@ import bcrypt from 'bcrypt';
 import { UserModel } from '../models/user';
 
 async function main() {
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@clothly.test';
-  const adminPassword = process.env.ADMIN_PASSWORD || 'clothly-admin-pass-12';
+  const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const adminPassword = process.env.ADMIN_PASSWORD;
 
   if (!adminEmail || !adminPassword) {
     console.error('ADMIN_EMAIL and ADMIN_PASSWORD are required');
@@ -22,8 +22,8 @@ async function main() {
   const passwordHash = await bcrypt.hash(adminPassword, 12);
 
   const result = await UserModel.findOneAndUpdate(
-    { email: adminEmail.toLowerCase().trim() },
-    { $set: { email: adminEmail.toLowerCase().trim(), password: passwordHash, role: 'admin' } },
+    { email: adminEmail },
+    { $set: { email: adminEmail, password: passwordHash, role: 'admin' } },
     { upsert: true, new: true, setDefaultsOnInsert: true, projection: { password: 0 } },
   );
 

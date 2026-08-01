@@ -1,5 +1,6 @@
 import { motion, useMotionValue, useTransform, type PanInfo } from 'motion/react';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface CardRotateProps {
   children: React.ReactNode;
@@ -101,40 +102,52 @@ export default function Stack({
         {
           id: 1,
           content: (
-            <img
-              src="/images/products/download%20(1).png"
+            <Image
+              src="/men/57ff8bec-7a8f-4103-8d1e-4b9a0ede062b.png"
               alt="card-1"
-              className="w-full h-full object-cover pointer-events-none"
+              width={240}
+              height={240}
+              sizes="240px"
+              className="object-cover pointer-events-none"
             />
           )
         },
         {
           id: 2,
           content: (
-            <img
-              src="/images/products/download%20(2).png"
+            <Image
+              src="/women/51b109c2-9b79-4184-94c2-e1d358ed12ee.png"
               alt="card-2"
-              className="w-full h-full object-cover pointer-events-none"
+              width={240}
+              height={240}
+              sizes="240px"
+              className="object-cover pointer-events-none"
             />
           )
         },
         {
           id: 3,
           content: (
-            <img
-              src="/images/products/download%20(3).png"
+            <Image
+              src="/kids/1ae5a3d1-633e-4680-8a41-19aed9931d6d.png"
               alt="card-3"
-              className="w-full h-full object-cover pointer-events-none"
+              width={240}
+              height={240}
+              sizes="240px"
+              className="object-cover pointer-events-none"
             />
           )
         },
         {
           id: 4,
           content: (
-            <img
-              src="/images/products/download%20(4).png"
+            <Image
+              src="/men/men-shoes/2bb741fb-4208-4212-a0cf-2b89b7108d37.png"
               alt="card-4"
-              className="w-full h-full object-cover pointer-events-none"
+              width={240}
+              height={240}
+              sizes="240px"
+              className="object-cover pointer-events-none"
             />
           )
         }

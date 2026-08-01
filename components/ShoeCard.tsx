@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import styled from 'styled-components';
 import type { Product } from '@/lib/products';
 
@@ -14,7 +15,7 @@ const ShoeCard = ({ product }: ShoeCardProps) => {
     <StyledWrapper>
       <Link href={`/product/${product.id}`} className="card" aria-label={`View details for ${product.name}`}>
         <div className="circle">
-          <img src={product.image} alt={product.name} />
+          <Image src={product.image} alt={product.name} fill sizes="160px" className="shoe-img" loading="lazy" />
         </div>
         <div className="info">
           <span className="name">{product.name}</span>
@@ -38,6 +39,7 @@ const StyledWrapper = styled.div`
   }
 
   .circle {
+    position: relative;
     width: 160px;
     height: 160px;
     border-radius: 50%;
@@ -52,14 +54,12 @@ const StyledWrapper = styled.div`
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
   }
 
-  .circle img {
-    width: 100%;
-    height: 100%;
+  .shoe-img {
     object-fit: cover;
     transition: transform 0.4s ease;
   }
 
-  .card:hover .circle img {
+  .card:hover .shoe-img {
     transform: scale(1.1);
   }
 

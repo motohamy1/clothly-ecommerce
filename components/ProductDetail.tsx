@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, Heart, ShoppingBag, Check } from 'lucide-react';
 import type { Product, ProductVariant } from '@/lib/products';
@@ -164,10 +165,12 @@ its on the page's cream chrome, outside the dark panel */}
                     outlineOffset: activeImageIndex === i ? '2px' : '0px',
                   }}
                 >
-                  <img
+                  <Image
                     src={src}
                     alt=""
-                    className="h-full w-full object-contain"
+                    fill
+                    sizes="(max-width: 1024px) 80px, 96px"
+                    className="object-contain"
                     style={{ borderRadius: 'inherit' }}
                   />
                 </button>

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import styled from 'styled-components';
 import type { Product } from '@/lib/products';
 
@@ -15,7 +16,7 @@ const ClothingCard = ({ product }: ClothingCardProps) => {
             <Link href={`/product/${product.id}`} className="card-shell" aria-label={`View details for ${product.name}`}>
                 <div className="card">
                     <div className="background">
-                        <img src={product.image} alt={product.name} className="product-img" />
+                        <Image src={product.image} alt={product.name} fill sizes="260px" className="product-img" loading="lazy" />
                     </div>
                     <div className="logo">
                         <span className="product-name">{product.name}</span>
@@ -79,8 +80,6 @@ const StyledWrapper = styled.div`
   }
 
   .product-img {
-    width: 100%;
-    height: 100%;
     object-fit: cover;
     object-position: center;
   }

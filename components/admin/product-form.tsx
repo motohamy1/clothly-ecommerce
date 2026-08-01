@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { useForm, useFieldArray, type Control, type FieldArray, type UseFieldArrayReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -213,10 +214,13 @@ export default function ProductForm({ initial, mode }: ProductFormProps) {
               {images.fields.map((field, index) => (
                 <div key={field.id} className="flex items-center gap-3">
                   {watch(`images.${index}`) && (
-                    <img
+                    <Image
                       src={watch(`images.${index}`)}
                       alt=""
-                      className="w-16 h-16 object-cover rounded"
+                      width={64}
+                      height={64}
+                      sizes="64px"
+                      className="object-cover rounded"
                     />
                   )}
                   <Input value={watch(`images.${index}`)} readOnly className="flex-1" />

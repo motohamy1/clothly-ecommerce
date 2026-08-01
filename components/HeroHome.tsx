@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import BounceCards from './BounceCards'
 import Stack from './Stack';
 
@@ -10,6 +11,14 @@ const images = [
     "/women/51b109c2-9b79-4184-94c2-e1d358ed12ee.png",
     "/kids/1ae5a3d1-633e-4680-8a41-19aed9931d6d.png",
     "/men/men-shoes/2bb741fb-4208-4212-a0cf-2b89b7108d37.png",
+]
+
+// ── Stack cards → different images from same categories ──
+const stackImages = [
+    "/men/6fbafa25-cd06-4fe1-8875-28843eb9ef2e.png",
+    "/women/64cfccf3-15dd-4624-a6fa-3e8181b7fcb9.png",
+    "/kids/1fc925f0-38b4-469c-901d-0ad81a84c2ed.png",
+    "/kids/kids-shoes/0879194d-8edc-41cf-8641-931e7b51b08c.png",
 ]
 
 const transformStyles = [
@@ -190,7 +199,21 @@ export default function HeroHome() {
                     transformStyles={transformStyles}
                     enableHover={true}
                 />
-                <Stack width={240} height={240} />
+                <Stack
+                    width={240}
+                    height={240}
+                    cards={stackImages.map((src, i) => (
+                        <Image
+                            key={i}
+                            src={src}
+                            alt={`stack-card-${i}`}
+                            width={240}
+                            height={240}
+                            sizes="240px"
+                            className="object-cover pointer-events-none"
+                        />
+                    ))}
+                />
             </div>
         </section>
     )

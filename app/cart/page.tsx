@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import { Minus, Plus, Trash2, ShoppingBag, ChevronLeft } from 'lucide-react';
@@ -93,13 +94,15 @@ export default function CartPage() {
               >
                 {/* Product Image */}
                 <div
-                  className="h-24 w-24 shrink-0 overflow-hidden rounded-xl"
+                  className="h-24 w-24 shrink-0 overflow-hidden rounded-xl relative"
                   style={{ outline: '1px solid oklch(0 0 0 / 0.1)' }}
                 >
-                  <img
+                  <Image
                     src={item.product.image}
                     alt={item.product.name}
-                    className="h-full w-full object-cover"
+                    fill
+                    sizes="96px"
+                    className="object-cover"
                   />
                 </div>
 

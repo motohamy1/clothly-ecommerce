@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { MoreHorizontal } from 'lucide-react';
 import type { Product } from '@/lib/products';
 import { useAdminToast } from '@/components/admin/toast';
@@ -72,10 +73,13 @@ export default function ProductListTable({ products }: ProductListTableProps) {
             <TableRow key={p.id} className="hover:bg-[rgba(26,24,20,0.03)]">
               <TableCell>
                 <div className="flex items-center gap-3">
-                  <img
+                  <Image
                     src={p.image}
                     alt={p.name}
-                    className="w-10 h-10 object-cover rounded"
+                    width={40}
+                    height={40}
+                    sizes="40px"
+                    className="object-cover rounded"
                   />
                   <Link
                     href={`/admin/products/${p.id}`}

@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import clothesRouter from './routers/clothes';
 import authRouter from './routers/auth';
+import cors from 'cors';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -20,6 +21,7 @@ if (!process.env.MONGODB_URI && process.env.NODE_ENV === 'production') {
 }
 
 app.use(express.json());
+app.use(cors())
 app.use('/shop', clothesRouter);
 app.use('/auth', authRouter);
 

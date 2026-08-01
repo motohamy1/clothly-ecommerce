@@ -1,5 +1,5 @@
 import express from 'express';
-import { ProductModel, type ProductGroup, type ProductSection } from '../models/product';
+import { ProductModel, type ProductCategory, type ProductGroup, type ProductSection } from '../models/product';
 import { productSeeds } from '../data/products';
 
 const router = express.Router();
@@ -26,9 +26,9 @@ function productPayload(body: Record<string, unknown>) {
     name: String(body.name ?? '').trim(),
     price: Number(body.price),
     image: String(body.image ?? '').trim(),
-    category: body.category as string,
-    group: body.group as string,
-    section: body.section as string,
+    category: body.category as ProductCategory,
+    group: body.group as ProductGroup,
+    section: body.section as ProductSection,
     description: String(body.description ?? '').trim(),
     images: normalizeList(body.images),
     sizes: normalizeList(body.sizes),

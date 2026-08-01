@@ -20,6 +20,18 @@
 # production
 /build
 
+# backend local artifacts
+/backend/node_modules/
+/backend/dist/
+/backend/build/
+/backend/coverage/
+/backend/.nyc_output/
+/backend/.cache/
+/backend/tmp/
+/backend/temp/
+/backend/.env
+/backend/.env.*
+
 # misc
 .DS_Store
 *.pem
@@ -29,6 +41,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+*.log
 
 # env files (can opt-in for committing if needed)
 .env*

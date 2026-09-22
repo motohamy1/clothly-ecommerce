@@ -51,7 +51,7 @@ export default function ContactSection() {
   return (
     <section
       id='contact'
-      className='font-sans w-full min-h-[calc(100vh-6rem)] md:min-h-[calc(100vh-7rem)] flex flex-col justify-center px-4 md:px-6 lg:px-10 py-12 md:py-16 scroll-mt-24'
+      className='font-sans w-full min-h-[calc(100svh-8.5rem)] flex flex-col justify-center px-4 md:px-6 lg:px-10 py-12 md:py-16 scroll-mt-24'
     >
       {/* Header */}
       <header className='max-w-2xl flex flex-col gap-1.5 mb-8 md:mb-12'>
@@ -94,9 +94,9 @@ export default function ContactSection() {
               'inset 0 1px 1px rgba(255, 255, 255, 0.6), 0 30px 60px -20px rgba(60, 40, 20, 0.12), 0 8px 24px -8px rgba(60, 40, 20, 0.06)',
           }}
         >
-          <div className='grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start relative z-10'>
+          <div className='grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 xl:gap-14 items-start relative z-10'>
             {/* Left Column: Direct Info & Location */}
-            <div className='lg:col-span-5 flex flex-col gap-8'>
+            <div className='lg:col-span-5 min-w-0 flex flex-col gap-8'>
               <div className='flex flex-col gap-2'>
                 <span className='text-xs font-semibold tracking-wider uppercase opacity-70' style={{ color: INK }}>
                   Momo Studio 
@@ -131,13 +131,13 @@ export default function ContactSection() {
                   <div className='p-2.5 rounded-lg bg-[oklch(0.2_0.03_98_/_0.06)] text-[oklch(0.2_0.03_98)] shrink-0'>
                     <Mail className='w-5 h-5' />
                   </div>
-                  <div className='flex flex-col gap-0.5'>
+                  <div className='min-w-0 flex flex-col gap-0.5'>
                     <span className='text-xs font-medium uppercase tracking-wide opacity-60' style={{ color: INK }}>
                       Direct Email & Phone
                     </span>
                     <a
                       href='mailto:concierge@clothly.com'
-                      className='text-sm font-semibold hover:underline'
+                      className='text-sm font-semibold hover:underline break-all'
                       style={{ color: INK }}
                     >
                       eltohamym660@gmail.com
@@ -180,7 +180,7 @@ export default function ContactSection() {
             </div>
 
             {/* Right Column: Contact Form */}
-            <div className='lg:col-span-7 bg-[oklch(0.96_0.02_90_/_0.85)] backdrop-blur-md p-6 sm:p-8 rounded-2xl border border-[oklch(0.2_0.03_98_/_0.12)] shadow-sm flex flex-col gap-6'>
+            <div className='lg:col-span-7 min-w-0 bg-[oklch(0.96_0.02_90_/_0.85)] backdrop-blur-md p-6 sm:p-8 rounded-2xl border border-[oklch(0.2_0.03_98_/_0.12)] shadow-sm flex flex-col gap-6'>
               <div>
                 <h3 className='text-lg sm:text-xl font-bold tracking-tight' style={{ color: INK_LIGHT }}>
                   Send a Message

@@ -86,17 +86,23 @@ const StyledWrapper = styled.div`
 
   .logo {
     position: absolute;
-    right: 50%;
-    bottom: 50%;
-    transform: translate(50%, 50%);
+    right: 0;
+    bottom: 0;
+    z-index: 4;
+    width: 50%;
+    padding: 9px 12px 10px 42px;
+    background: oklch(0.943 0.051 98.2 / 0.9);
+    border-top: 1px solid oklch(1 0 0 / 0.5);
+    border-left: 1px solid oklch(1 0 0 / 0.5);
+    border-radius: 46% 12% 0 0 / 58% 12% 0 0;
+    box-shadow: rgba(100, 100, 111, 0.22) 6px -6px 22px 0px;
     transition: all 0.6s cubic-bezier(0.32, 0.72, 0, 1);
-    font-size: 0.9em;
+    font-size: 0.75em;
     font-weight: 600;
-    color: oklch(0.943 0.051 98.2);
+    line-height: 1.3;
+    color: oklch(0.2 0.03 98);
     letter-spacing: 0.05em;
-    text-align: center;
-    max-width: 180px;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    text-align: right;
   }
 
   .product-name {
@@ -130,8 +136,7 @@ const StyledWrapper = styled.div`
   .box-label {
     font-size: 0.75em;
     font-weight: 700;
-    color: oklch(0.943 0.051 98.2);
-    text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    color: oklch(0.2 0.03 98);
     text-align: center;
     line-height: 1.2;
     z-index: 10;
@@ -204,12 +209,6 @@ const StyledWrapper = styled.div`
     bottom: 0;
     left: 0;
     z-index: 3;
-  }
-
-  .card:hover .logo {
-    transform: translate(60px, -40px);
-    letter-spacing: 0px;
-    font-size: 0.75em;
   }
 `;
 

@@ -4,6 +4,13 @@ import clothesRouter from './routers/clothes';
 import authRouter from './routers/auth';
 import cors from 'cors';
 
+// Load .env before anything reads process.env (Node 20.12+/21.7+; no dotenv dep needed)
+try {
+  process.loadEnvFile();
+} catch {
+  console.warn('[clothly-backend] No .env file found — using process environment only.');
+}
+
 const app = express();
 const port = process.env.PORT || 5000;
 

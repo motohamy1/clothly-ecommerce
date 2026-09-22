@@ -63,11 +63,11 @@ export default function HeroHome() {
     return (
         <section
             id="home"
-            className="font-sans flex flex-col md:flex-row justify-between min-h-[calc(100vh-8.5rem)] w-full px-6 md:px-16 lg:px-24 gap-6 md:gap-0 overflow-x-hidden scroll-mt-24 pb-4 md:pb-6"
+            className="font-sans flex flex-col lg:flex-row justify-between min-h-[calc(100vh-8.5rem)] w-full px-6 md:px-16 lg:px-24 gap-6 md:gap-0 overflow-x-hidden scroll-mt-24 pb-4 md:pb-6"
             style={{ background: 'oklch(0.943 0.051 98.2)' }}
         >
             {/* ── Left: editorial copy ── */}
-            <div className="flex flex-col items-start gap-4 md:w-1/2 pt-15 md:pt-10 z-10">
+            <div className="flex flex-col items-start gap-4 lg:w-1/2 pt-15 md:pt-10 z-10">
 
                 {/* Eyebrow pill */}
                 <span
@@ -88,7 +88,7 @@ export default function HeroHome() {
                     ref={headingRef}
                     className="font-extrabold whitespace-pre-line text-balance"
                     style={{
-                        fontSize:   'clamp(2.5rem, 7vw, 7rem)',
+                        fontSize:   'clamp(2.5rem, 6vw, 7rem)',
                         fontWeight: 800,
                         lineHeight: 0.95,
                         color:      'oklch(0.15 0.02 98)',
@@ -115,12 +115,12 @@ export default function HeroHome() {
                 </p>
 
                 {/* CTA Buttons */}
-                <div className="flex flex-nowrap items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                     {/* Men - Filled dark */}
                     <Link
                         ref={btnMenRef}
                         href="/men"
-                        className="rounded-full px-5 py-3 text-xs font-semibold tracking-wide select-none md:px-7 md:py-3.5 md:text-sm"
+                        className="rounded-full px-5 py-3 text-xs font-semibold tracking-wide select-none md:px-6 md:py-3 md:text-sm"
                         style={{
                             background:  'oklch(0.2 0.03 98)',
                             color:       'oklch(0.943 0.051 98.2)',
@@ -142,7 +142,7 @@ export default function HeroHome() {
                     <Link
                         ref={btnWomenRef}
                         href="/women"
-                        className="rounded-full px-5 py-3 text-xs font-semibold tracking-wide select-none md:px-7 md:py-3.5 md:text-sm"
+                        className="rounded-full px-5 py-3 text-xs font-semibold tracking-wide select-none md:px-6 md:py-3 md:text-sm"
                         style={{
                             background:  'transparent',
                             color:       'oklch(0.2 0.03 98)',
@@ -167,7 +167,7 @@ export default function HeroHome() {
                     <Link
                         ref={btnKidsRef}
                         href="/kids"
-                        className="rounded-full px-5 py-3 text-xs font-semibold tracking-wide select-none md:px-7 md:py-3.5 md:text-sm"
+                        className="rounded-full px-5 py-3 text-xs font-semibold tracking-wide select-none md:px-6 md:py-3 md:text-sm"
                         style={{
                             background:  'oklch(0.58 0.14 60)',
                             color:       'oklch(0.943 0.051 98.2)',
@@ -188,7 +188,7 @@ export default function HeroHome() {
             </div>
 
             {/* ── Right: BounceCards cluster with Stack below ── */}
-            <div className="flex flex-col mt-8 items-center md:w-1/2 gap-8 pb-10 md:pb-0">
+            <div className="flex flex-col mt-8 items-center lg:w-1/2 gap-8 pb-10 md:pb-0 [zoom:0.7] lg:[zoom:0.72] xl:[zoom:0.85] 2xl:[zoom:1]">
                 <BounceCards
                     images={images}
                     containerWidth={300}

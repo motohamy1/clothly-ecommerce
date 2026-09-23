@@ -13,5 +13,5 @@
     "skipLibCheck": true,
     "resolveJsonModule": true
   },
-  "exclude": ["src/scripts"]
+  "exclude": ["src/scripts", "vitest.config.ts", "**/*.test.ts"]
 }

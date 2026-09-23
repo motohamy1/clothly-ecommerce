@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import clothesRouter from './routers/clothes';
 import authRouter from './routers/auth';
+import ordersRouter from './routers/orders';
 import cors from 'cors';
 
 // Load .env before anything reads process.env (Node 20.12+/21.7+; no dotenv dep needed)
@@ -37,6 +38,7 @@ app.use(cors({
 }))
 app.use('/shop', clothesRouter);
 app.use('/auth', authRouter);
+app.use('/orders', ordersRouter);
 
 app.get('/health', (_req, res) => {
   res.json({ ok: true, service: 'clothly-backend' });

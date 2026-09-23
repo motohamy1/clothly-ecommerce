@@ -3,7 +3,7 @@ import { jwtVerify } from 'jose';
 
 const COOKIE_NAME = 'clothly_session';
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname === '/admin/login' || !pathname.startsWith('/admin')) {

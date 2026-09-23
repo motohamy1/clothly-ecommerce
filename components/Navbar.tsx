@@ -334,6 +334,8 @@ export default function Navbar({
                     </svg>
                     {totalItems > 0 && (
                       <span
+                        role="status"
+                        aria-live="polite"
                         className="absolute top-1 right-1 text-[10px] font-semibold min-w-4 h-4 flex items-center justify-center rounded-lg px-1"
                         style={{
                           background: `linear-gradient(to bottom right, ${primary.main}, ${primary.DEFAULT})`,
@@ -341,6 +343,7 @@ export default function Navbar({
                         }}
                       >
                         {totalItems}
+                        <span className="sr-only"> items in cart</span>
                       </span>
                     )}
                   </Link>

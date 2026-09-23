@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, Heart, ShoppingBag, Check } from 'lucide-react';
 import type { Product, ProductVariant } from '@/lib/products';
 import { useCart } from '@/lib/cart-context';
+import { useWishlist } from '@/lib/wishlist-context';
 
 interface ProductDetailProps {
   product: Product;
@@ -73,6 +74,9 @@ const iconCrossfadeVariants = {
 export default function ProductDetail({ product }: ProductDetailProps) {
   const router = useRouter();
   const { addItem } = useCart();
+  const { has: isWishlisted, toggle: toggleWishlist } = useWishlist();
+
+  const wishlisted = isWishlisted(product.id);
 
   const galleryImages =
     product.images && product.images.length > 0
@@ -85,9 +89,8 @@ export default function ProductDetail({ product }: ProductDetailProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
-  const [isPortrait, setIsPortrait] = useState<boolean | null>(null);
+
 
   const addTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -104,6 +107,13 @@ export default function ProductDetail({ product }: ProductDetailProps) {
     addTimeoutRef.current = setTimeout(() => setJustAdded(false), 1800);
   };
 
+  // "Buy Now" adds the current selection and jumps straight to the cart,
+  // where the (auth-aware) checkout lives.
+  const handleBuyNow = () => {
+    handleAddToCart();
+    router.push('/cart');
+  };
+
   const fallbackDescription = `Crafted with premium materials and considered detailing, the ${product.name} is designed to move with you — refined enough for everyday wear, durable enough to become a staple.`;
 
   const categoryLabel = product.category === 'shoe' ? 'Footwear' : 'Apparel';
@@ -115,8 +125,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
 
   return (
     <section className="w-full">
-      {/* Back link — s
-its on the page's cream chrome, outside the dark panel */}
+      {/* Back link — sits on the page's cream chrome, outside the dark panel */}
       <button
         type="button"
         onClick={() => router.back()}
@@ -138,17 +147,17 @@ its on the page's cream chrome, outside the dark panel */}
         {/* ── Dark spotlight panel ── */}
         <motion.div
           variants={panelVariants}
-          className="relative flex-1 overflow-hidden rounded-[25px] p-5 md:p-8 lg:p-10"
+          className="relative flex-1 overflow-hidden rounded-[25px] p-5 md:p-8 lg:p-6 xl:p-8 2xl:p-10"
           style={{
             background: PANEL_BG,
             boxShadow: '0 1px 2px oklch(0 0 0 / 0.4), 0 24px 60px oklch(0 0 0 / 0.35)',
           }}
         >
-          <div className="flex flex-col gap-6 lg:h-[500px] lg:flex-row lg:items-stretch lg:gap-8">
+          <div className="flex flex-col gap-6 lg:h-[500px] lg:flex-row lg:items-stretch lg:gap-4 xl:gap-6 2xl:gap-8">
             {/* ── Rail: photo gallery thumbnails ── */}
             <motion.div
               variants={itemVariants}
-              className="order-2 flex shrink-0 flex-row gap-3 overflow-x-auto lg:order-1 lg:h-full lg:w-[96px] lg:flex-col lg:overflow-visible lg:pb-6"
+              className="order-2 flex shrink-0 flex-row gap-3 overflow-x-auto lg:order-1 lg:h-full lg:w-[68px] lg:flex-col lg:overflow-visible xl:w-[88px] 2xl:w-[96px]"
             >
               {galleryImages.slice(0, 3).map((src, i) => (
                 <button
@@ -157,9 +166,9 @@ its on the page's cream chrome, outside the dark panel */}
                   onClick={() => setActiveImageIndex(i)}
                   aria-label={`View photo ${i + 1}`}
                   aria-pressed={activeImageIndex === i}
-                  className={`relative bottom-8 h-20 w-20 shrink-0 overflow-hidden rounded-2xl transition-transform duration-300 active:scale-[0.96] lg:h-auto lg:w-full ${
+                  className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl transition-transform duration-300 active:scale-[0.96] lg:h-auto lg:w-full ${
                     i === 0 ? 'lg:grow-[2]' : 'lg:grow'
-                  } ${i === 2 ? 'lg:mb-2' : ''}`}
+                  }`}
                   style={{
                     outline: activeImageIndex === i ? `2px solid ${CREAM}` : '1px solid oklch(1 0 0 / 0.12)',
                     outlineOffset: activeImageIndex === i ? '2px' : '0px',
@@ -169,7 +178,7 @@ its on the page's cream chrome, outside the dark panel */}
                     src={src}
                     alt=""
                     fill
-                    sizes="(max-width: 1024px) 80px, 96px"
+                    sizes="96px"
                     className="object-contain"
                     style={{ borderRadius: 'inherit' }}
                   />
@@ -180,7 +189,7 @@ its on the page's cream chrome, outside the dark panel */}
             {/* ── Info column ── */}
             <motion.div
               variants={itemVariants}
-              className="order-1 flex shrink-0 flex-col justify-between gap-6 lg:order-2 lg:h-full lg:w-[260px]"
+              className="order-1 flex shrink-0 flex-col justify-between gap-6 lg:order-2 lg:h-full lg:w-[190px] xl:w-[230px] 2xl:w-[260px]"
             >
               <div>
                 <span
@@ -190,13 +199,13 @@ its on the page's cream chrome, outside the dark panel */}
                   {categoryLabel}
                 </span>
                 <h1
-                  className="text-3xl font-extrabold leading-[1.05] md:text-4xl text-balance"
+                  className="text-3xl font-extrabold leading-[1.05] md:text-4xl lg:text-2xl xl:text-3xl 2xl:text-4xl text-balance"
                   style={{ color: CREAM }}
                 >
                   {product.name}
                 </h1>
                 <div className="mt-3 flex flex-wrap items-center gap-2">
-                  <span className="text-xs" style={{ color: CREAM_MUTED }}>
+                  <span className="basis-full text-xs" style={{ color: CREAM_MUTED }}>
                     {product.sizes && product.sizes.length > 0 ? 'Select size' : 'Size info on the way'}
                   </span>
                   {product.sizes?.map((size) => {
@@ -235,12 +244,12 @@ its on the page's cream chrome, outside the dark panel */}
               </div>
 
               <div>
-                <div className="text-3xl font-bold tabular-nums" style={{ color: CREAM }}>
+                <div className="text-2xl font-bold tabular-nums xl:text-3xl" style={{ color: CREAM }}>
                   ${product.price.toFixed(2)}
                 </div>
               </div>
 
-              <p className="text-sm leading-relaxed max-w-prose" style={{ color: CREAM_MUTED }}>
+              <p className="line-clamp-6 text-sm leading-relaxed max-w-prose" style={{ color: CREAM_MUTED }}>
                 {product.description ?? fallbackDescription}
               </p>
             </motion.div>
@@ -250,19 +259,19 @@ its on the page's cream chrome, outside the dark panel */}
               variants={itemVariants}
               className="order-3 flex min-w-0 flex-1 flex-col gap-4"
             >
-              <div className="relative flex-1 lg:min-h-0">
+              <div className="relative aspect-[4/5] sm:aspect-[16/10] lg:aspect-auto lg:min-h-0 lg:flex-1">
                 {/* Wishlist toggle */}
                 <button
                   type="button"
-                  onClick={() => setIsWishlisted((w) => !w)}
-                  aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-                  aria-pressed={isWishlisted}
+                  onClick={() => toggleWishlist(product.id)}
+                  aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+                  aria-pressed={wishlisted}
                   className="absolute right-3 top-3 z-10 flex h-11 w-11 items-center justify-center rounded-full transition-transform duration-300 active:scale-[0.96]"
                   style={{ background: 'oklch(0.943 0.051 98.2 / 0.12)', outline: '1px solid oklch(1 0 0 / 0.12)' }}
                 >
                   <span className="relative inline-flex h-5 w-5 items-center justify-center">
                     <AnimatePresence initial={false} mode="wait">
-                      {isWishlisted ? (
+                      {wishlisted ? (
                         <motion.span
                           key="filled"
                           variants={iconCrossfadeVariants}
@@ -308,11 +317,7 @@ its on the page's cream chrome, outside the dark panel */}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.98 }}
                         transition={{ duration: 0.25, ease: [0.2, 0, 0, 1] }}
-                        className={`object-contain ${isPortrait ? 'h-full w-auto' : 'h-auto w-full'}`}
-                        onLoad={(e) => {
-                          const img = e.currentTarget;
-                          setIsPortrait(img.naturalHeight > img.naturalWidth);
-                        }}
+                        className="h-full w-full object-contain"
                       />
                     </AnimatePresence>
                     {/*
@@ -343,7 +348,7 @@ its on the page's cream chrome, outside the dark panel */}
                 <button
                   type="button"
                   onClick={handleAddToCart}
-                  className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-full text-sm font-semibold transition-[background-color,transform] duration-300 active:scale-[0.96]"
+                  className="inline-flex h-12 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-semibold transition-[background-color,transform] duration-300 active:scale-[0.96]"
                   style={{ color: CREAM, border: '1.5px solid oklch(1 0 0 / 0.25)' }}
                   onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'oklch(1 0 0 / 0.06)'; }}
                   onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
@@ -382,7 +387,8 @@ its on the page's cream chrome, outside the dark panel */}
 
                 <button
                   type="button"
-                  className="inline-flex h-12 flex-1 items-center justify-center rounded-full text-sm font-semibold transition-[background-color,transform] duration-300 active:scale-[0.96]"
+                  onClick={handleBuyNow}
+                  className="inline-flex h-12 flex-1 items-center justify-center whitespace-nowrap rounded-full px-4 text-sm font-semibold transition-[background-color,transform] duration-300 active:scale-[0.96]"
                   style={{ background: CREAM, color: DARK }}
                   onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'oklch(0.85 0.045 98)'; }}
                   onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = CREAM; }}
@@ -397,7 +403,7 @@ its on the page's cream chrome, outside the dark panel */}
         {/* ── Color swatches: separate from the product card, on the page's cream chrome ── */}
         <motion.div
           variants={itemVariants}
-          className="flex shrink-0 flex-col items-center gap-4 lg:h-[500px] lg:w-[64px]"
+          className="flex shrink-0 flex-col items-center gap-4 lg:h-[500px] lg:w-[56px] xl:w-[64px]"
         >
           <span
             className="hidden text-center text-[10px] font-medium uppercase tracking-[0.2em] lg:block"

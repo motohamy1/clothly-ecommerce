@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Allow the LAN IP to load dev resources (HMR, fonts, stack frames)
+  allowedDevOrigins: ['192.168.1.6'],
   compiler: {
     styledComponents: true,
   },

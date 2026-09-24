@@ -43,6 +43,10 @@ progress:
 
 - Phase 1 added: Admin Panel & Auth Foundation (User model + JWT auth, admin product CRUD UI with image upload, storefront DB migration)
 
+### Pending Todos
+
+- [ ] Replace showcase capture pipeline — tooling (`.planning/todos/pending/2026-09-24-replace-showcase-capture-pipeline.md`)
+
 ### Known pre-existing issues (flagged for planner)
 
 - Backend `start` script is broken (`node dist/index.ts` should be `.js`)

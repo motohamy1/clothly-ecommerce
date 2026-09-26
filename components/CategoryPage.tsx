@@ -3,28 +3,29 @@ import styled from 'styled-components';
 import ClothingCard from '@/components/ClothingCard';
 import ShoeCard from '@/components/ShoeCard';
 import GsapCarousel from '@/components/GsapCarousel';
+import Reveal from '@/components/Reveal';
 import { backendFetch } from '@/lib/backend';
 import { collectionMeta } from '@/lib/collection-meta';
 import { catalog } from '@/lib/product-seeds';
-import type { ProductSection } from '@/lib/products';
+import type { ProductCollection, ProductSection } from '@/lib/products';
 
 interface CategoryPageProps {
   section: ProductSection;
 }
 
 async function CategoryPage({ section }: CategoryPageProps) {
-  let data: { collection?: any };
+  let collection: ProductCollection | undefined;
   let backendError: string | null = null;
 
   try {
-    data = await backendFetch('/shop/' + section);
-  } catch (err: any) {
-    console.error(`[clothly] backend unreachable for /shop/${section}:`, err.message);
-    backendError = `Backend unreachable. Showing fallback catalog. (${err.message})`;
-    data = { collection: catalog[section] };
+    const data = await backendFetch('/shop/' + section) as { collection?: ProductCollection };
+    collection = data.collection;
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown backend error';
+    console.error(`[clothly] backend unreachable for /shop/${section}:`, message);
+    backendError = `Backend unreachable. Showing fallback catalog. (${message})`;
+    collection = catalog[section];
   }
-
-  const collection = data?.collection;
   const meta = collectionMeta[section];
 
   if (!collection) return null;
@@ -43,32 +44,38 @@ async function CategoryPage({ section }: CategoryPageProps) {
           ))}
         </h1>
 
-        <section className="section">
-          <h2 className="section-title">Clothing</h2>
-          <GsapCarousel itemWidth={260} gap={20}>
-            {collection.groups.clothing.map((p: any) => (
-              <ClothingCard key={p.id} product={p} />
-            ))}
-          </GsapCarousel>
-        </section>
+        <Reveal y={18} blur={3} duration={700}>
+          <section className="section">
+            <h2 className="section-title">Clothing</h2>
+            <GsapCarousel itemWidth={260} gap={20}>
+              {collection.groups.clothing.map((p) => (
+                <ClothingCard key={p.id} product={p} />
+              ))}
+            </GsapCarousel>
+          </section>
+        </Reveal>
 
-        <section className="section">
-          <h2 className="section-title">Outerwear</h2>
-          <GsapCarousel itemWidth={260} gap={20}>
-            {collection.groups.outerwear.map((p: any) => (
-              <ClothingCard key={p.id} product={p} />
-            ))}
-          </GsapCarousel>
-        </section>
+        <Reveal y={18} blur={3} duration={700}>
+          <section className="section">
+            <h2 className="section-title">Outerwear</h2>
+            <GsapCarousel itemWidth={260} gap={20}>
+              {collection.groups.outerwear.map((p) => (
+                <ClothingCard key={p.id} product={p} />
+              ))}
+            </GsapCarousel>
+          </section>
+        </Reveal>
 
-        <section className="section">
-          <h2 className="section-title">Shoes</h2>
-          <GsapCarousel itemWidth={180} gap={24}>
-            {collection.groups.shoes.map((p: any) => (
-              <ShoeCard key={p.id} product={p} />
-            ))}
-          </GsapCarousel>
-        </section>
+        <Reveal y={18} blur={3} duration={700}>
+          <section className="section">
+            <h2 className="section-title">Shoes</h2>
+            <GsapCarousel itemWidth={180} gap={24}>
+              {collection.groups.shoes.map((p) => (
+                <ShoeCard key={p.id} product={p} />
+              ))}
+            </GsapCarousel>
+          </section>
+        </Reveal>
       </div>
     </StyledWrapper>
   );

@@ -4,6 +4,8 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import SideBar from "@/components/SideBar";
 import Providers from "@/components/Providers";
+import RouteTransition from "@/components/RouteTransition";
+import StyledComponentsRegistry from "@/components/StyledComponentsRegistry";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,15 +32,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#f5edc7]`}
       >
-        <Providers>
+        <StyledComponentsRegistry>
+          <Providers>
           <Navbar />
           <div className="hidden md:block">
             <SideBar />
           </div>
           <main className="min-h-screen md:ml-[240px] pt-[8.5rem] px-4 md:px-8 bg-[#f5edc7]">
-            {children}
+            <RouteTransition>{children}</RouteTransition>
           </main>
-        </Providers>
+          </Providers>
+        </StyledComponentsRegistry>
       {/* impeccable-live-start */}
 <script src="http://localhost:8400/live.js"></script>
 {/* impeccable-live-end */}

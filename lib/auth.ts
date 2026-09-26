@@ -37,6 +37,10 @@ export async function requireAdmin(): Promise<SessionUser> {
   }
   return session;
 }
+export async function getBackendSessionHeaders(): Promise<Record<string, string>> {
+  const token = (await cookies()).get(COOKIE_NAME)?.value;
+  return token ? { Cookie: `${COOKIE_NAME}=${token}` } : {};
+}
 
 export async function requireAuth(): Promise<SessionUser> {
   const session = await getSession();

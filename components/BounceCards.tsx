@@ -36,6 +36,8 @@ export default function BounceCards({
 }: BounceCardsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
+  const autoplayStepRef = useRef(0);
+  const pointerOverRef = useRef(false);
 
   useEffect(() => {
     if (reduceMotion) return;
@@ -53,7 +55,30 @@ export default function BounceCards({
       );
     }, containerRef);
     return () => ctx.revert();
-  }, [animationDelay, animationStagger, easeType]);
+  }, [animationDelay, animationStagger, easeType, reduceMotion]);
+
+  useEffect(() => {
+    if (reduceMotion || images.length < 2 || transformStyles.length < 2) return;
+
+    const timer = window.setInterval(() => {
+      if (pointerOverRef.current || !containerRef.current) return;
+
+      autoplayStepRef.current = (autoplayStepRef.current + 1) % images.length;
+      images.forEach((_, index) => {
+        const card = containerRef.current?.querySelector(`.card-${index}`);
+        const position = (index + autoplayStepRef.current) % transformStyles.length;
+        if (!card) return;
+        gsap.to(card, {
+          transform: transformStyles[position] || 'none',
+          duration: 1.05,
+          ease: 'power3.inOut',
+          overwrite: 'auto',
+        });
+      });
+    }, 3800);
+
+    return () => window.clearInterval(timer);
+  }, [images, reduceMotion, transformStyles]);
 
   const getNoRotationTransform = (transformStr: string): string => {
     const hasRotate = /rotate\([\s\S]*?\)/.test(transformStr);
@@ -86,7 +111,8 @@ export default function BounceCards({
       const selector = q(`.card-${i}`);
       gsap.killTweensOf(selector);
 
-      const baseTransform = transformStyles[i] || 'none';
+      const position = (i + autoplayStepRef.current) % transformStyles.length;
+      const baseTransform = transformStyles[position] || 'none';
 
       if (i === hoveredIdx) {
         const noRotation = getNoRotationTransform(baseTransform);
@@ -122,7 +148,8 @@ export default function BounceCards({
       const selector = q(`.card-${i}`);
       gsap.killTweensOf(selector);
 
-      const baseTransform = transformStyles[i] || 'none';
+      const position = (i + autoplayStepRef.current) % transformStyles.length;
+      const baseTransform = transformStyles[position] || 'none';
       gsap.to(selector, {
         transform: baseTransform,
         duration: 0.4,
@@ -136,6 +163,8 @@ export default function BounceCards({
     <div
       className={`relative flex items-center justify-center ${className}`}
       ref={containerRef}
+      onPointerEnter={() => { pointerOverRef.current = true; }}
+      onPointerLeave={() => { pointerOverRef.current = false; }}
       style={{
         width: containerWidth,
         height: containerHeight

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { backendFetch } from '@/lib/backend';
-import { requireAdmin } from '@/lib/auth';
+import { getBackendSessionHeaders, requireAdmin } from '@/lib/auth';
 
 export async function GET() {
   try { await requireAdmin(); } catch (r) { return r as Response; }
@@ -19,7 +19,11 @@ export async function POST(request: Request) {
   try { await requireAdmin(); } catch (r) { return r as Response; }
   try {
     const body = await request.json();
-    const data = await backendFetch('/shop/products', { method: 'POST', body: JSON.stringify(body) });
+    const data = await backendFetch('/shop/products', {
+      method: 'POST',
+      headers: await getBackendSessionHeaders(),
+      body: JSON.stringify(body),
+    });
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Failed to create product';

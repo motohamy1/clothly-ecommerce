@@ -25,6 +25,7 @@ function SideBar() {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     const router = useRouter();
     const pathname = usePathname();
+    const pathnameKey = pathname ?? '';
     const [prevPathname, setPrevPathname] = useState(pathname);
 
     if (pathname !== prevPathname) {
@@ -110,7 +111,7 @@ function SideBar() {
         });
 
         return () => observer.disconnect();
-    }, [pathname ?? '']);
+    }, [pathnameKey]);
 
     return (
         <StyledWrapper>
@@ -120,7 +121,8 @@ function SideBar() {
                     return (
                         <div
                             key={item.id}
-                            className={isActive ? 'active' : ''}
+                            className={`sidebar-item ${isActive ? 'active' : ''} ${hoveredIndex === index || (hoveredIndex === null && isActive) ? 'expanded' : ''}`}
+                            aria-expanded={hoveredIndex === index || (hoveredIndex === null && isActive)}
                             onClick={() => handleCardClick(index, item.id, item.href)}
                             onMouseEnter={() => handleMouseEnter(index)}
                             onMouseLeave={handleMouseLeave}
@@ -133,7 +135,12 @@ function SideBar() {
                                 }
                             }}
                         >
-                            <span>{item.label}</span>
+                            <span className="sidebar-copy">
+                                <span className="sidebar-label">{item.label}</span>
+                                <span className="sidebar-action">
+                                    <span className="sidebar-cta">View collection <span aria-hidden="true">↗</span></span>
+                                </span>
+                            </span>
                         </div>
                     );
                 })}
@@ -184,10 +191,62 @@ const StyledWrapper = styled.div`
     margin-bottom: 0;
   }
 
-  .card div:hover,
-  .card div.active {
+  .card .sidebar-item.expanded {
     flex: 4;
   }
+
+  .card .sidebar-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem 0.5rem;
+  }
+
+  .card .sidebar-label {
+    line-height: 1.2;
+    transition: color 0.4s, letter-spacing 0.4s;
+  }
+
+  .card .sidebar-action {
+    display: flex;
+    align-items: center;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(8px);
+    color: oklch(0.36 0.03 82);
+    transition: max-height 0.55s ease, opacity 0.35s ease, transform 0.45s ease;
+  }
+
+  .card .sidebar-item.expanded .sidebar-action {
+    max-height: 2rem;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .card .sidebar-cta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .card .sidebar-item.active .sidebar-action,
+  .card .sidebar-item.active .sidebar-cta {
+    color: oklch(0.91 0.03 90);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card .sidebar-item,
+    .card .sidebar-action {
+      transition-duration: 0.01ms;
+    }
+  }
+
 
   .card div.active {
         background-color: oklch(0.19 0.09 18);
@@ -206,12 +265,11 @@ const StyledWrapper = styled.div`
             0 8px 24px rgba(33, 33, 33, 0.28);
   }
 
-  .card div span {
+  .card .sidebar-label {
     padding: 0.2em;
     text-align: center;
-    transform: rotate(-0deg);
-    transition: transform 0.5s;
-        transition-property: transform, color;
+    transform: rotate(0deg);
+    transition: color 0.4s, letter-spacing 0.4s;
     text-transform: uppercase;
     color: oklch(0.15 0.02 98);
     font-weight: 700;
@@ -219,14 +277,9 @@ const StyledWrapper = styled.div`
     z-index: 1;
   }
 
-  .card div:hover span,
-  .card div.active span {
-    transform: rotate(0);
+  .card .sidebar-item.active .sidebar-label {
+    color: oklch(0.943 0.051 98.2);
   }
-
-    .card div.active span {
-        color: oklch(0.943 0.051 98.2);
-    }
 
   .card div::before {
     content: "";

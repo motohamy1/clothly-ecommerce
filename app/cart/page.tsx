@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Minus, Plus, Trash2, ShoppingBag, ChevronLeft, CheckCircle2, Loader2 } from 'lucide-react';
 import { useCart, MAX_QUANTITY_PER_ITEM } from '@/lib/cart-context';
 import { useLastPage } from '@/components/NavigationMemory';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const DARK = 'oklch(0.2 0.03 98)';
 const DARK_MUTED = 'oklch(0.48 0.03 98)';
@@ -77,12 +78,36 @@ export default function CartPage() {
   // Avoid a flash of "empty cart" before localStorage is read.
   if (!isHydrated) {
     return (
-      <section className="flex min-h-[60vh] items-center justify-center px-4">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin" style={{ color: DARK_MUTED }} />
-          <p className="text-sm" style={{ color: DARK_MUTED }}>
-            Loading your cart…
-          </p>
+      <section role="status" aria-label="Loading cart" aria-busy="true" className="min-h-[60vh] px-4 py-12 md:px-8 lg:px-16">
+        <span className="sr-only">Loading cart items</span>
+        <div className="mb-8 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Skeleton className="h-10 w-20 rounded-full" />
+            <Skeleton className="h-8 w-24" />
+          </div>
+          <Skeleton className="h-4 w-16" />
+        </div>
+        <div className="flex flex-col gap-8 lg:flex-row">
+          <div className="flex-1 space-y-4">
+            {[0, 1].map((item) => (
+              <div key={item} className="flex gap-4 rounded-2xl border border-[rgba(26,24,20,0.08)] bg-[rgba(26,24,20,0.03)] p-4">
+                <Skeleton className="h-24 w-24 shrink-0 rounded-xl" />
+                <div className="flex flex-1 flex-col justify-center gap-3">
+                  <Skeleton className="h-4 w-2/3" />
+                  <Skeleton className="h-3 w-1/3" />
+                  <Skeleton className="h-4 w-1/4" />
+                </div>
+              </div>
+            ))}
+          </div>
+          <aside className="h-fit space-y-5 rounded-2xl border border-[rgba(26,24,20,0.08)] bg-[rgba(26,24,20,0.03)] p-6 lg:w-80">
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-px w-full" />
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-12 w-full rounded-full" />
+          </aside>
         </div>
       </section>
     );

@@ -103,7 +103,7 @@ export default function Stack({
           id: 1,
           content: (
             <Image
-              src="/men/57ff8bec-7a8f-4103-8d1e-4b9a0ede062b.png"
+              src="/men/57ff8bec-7a8f-4103-8d1e-4b9a0ede062b.webp"
               alt="card-1"
               width={240}
               height={240}
@@ -116,7 +116,7 @@ export default function Stack({
           id: 2,
           content: (
             <Image
-              src="/women/51b109c2-9b79-4184-94c2-e1d358ed12ee.png"
+              src="/women/51b109c2-9b79-4184-94c2-e1d358ed12ee.webp"
               alt="card-2"
               width={240}
               height={240}
@@ -129,7 +129,7 @@ export default function Stack({
           id: 3,
           content: (
             <Image
-              src="/kids/1ae5a3d1-633e-4680-8a41-19aed9931d6d.png"
+              src="/kids/1ae5a3d1-633e-4680-8a41-19aed9931d6d.webp"
               alt="card-3"
               width={240}
               height={240}
@@ -142,7 +142,7 @@ export default function Stack({
           id: 4,
           content: (
             <Image
-              src="/men/men-shoes/2bb741fb-4208-4212-a0cf-2b89b7108d37.png"
+              src="/men/men-shoes/2bb741fb-4208-4212-a0cf-2b89b7108d37.webp"
               alt="card-4"
               width={240}
               height={240}

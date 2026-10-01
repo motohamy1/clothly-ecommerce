@@ -7,18 +7,18 @@ import BounceCards from './BounceCards'
 import Stack from './Stack';
 
 const images = [
-    "/men/57ff8bec-7a8f-4103-8d1e-4b9a0ede062b.png",
-    "/women/51b109c2-9b79-4184-94c2-e1d358ed12ee.png",
-    "/kids/1ae5a3d1-633e-4680-8a41-19aed9931d6d.png",
-    "/men/men-shoes/2bb741fb-4208-4212-a0cf-2b89b7108d37.png",
+    "/men/57ff8bec-7a8f-4103-8d1e-4b9a0ede062b.webp",
+    "/women/51b109c2-9b79-4184-94c2-e1d358ed12ee.webp",
+    "/kids/1ae5a3d1-633e-4680-8a41-19aed9931d6d.webp",
+    "/men/men-shoes/2bb741fb-4208-4212-a0cf-2b89b7108d37.webp",
 ]
 
 // ── Stack cards → different images from same categories ──
 const stackImages = [
-    "/men/6fbafa25-cd06-4fe1-8875-28843eb9ef2e.png",
-    "/women/64cfccf3-15dd-4624-a6fa-3e8181b7fcb9.png",
-    "/kids/1fc925f0-38b4-469c-901d-0ad81a84c2ed.png",
-    "/kids/kids-shoes/0879194d-8edc-41cf-8641-931e7b51b08c.png",
+    "/men/6fbafa25-cd06-4fe1-8875-28843eb9ef2e.webp",
+    "/women/64cfccf3-15dd-4624-a6fa-3e8181b7fcb9.webp",
+    "/kids/1fc925f0-38b4-469c-901d-0ad81a84c2ed.webp",
+    "/kids/kids-shoes/0879194d-8edc-41cf-8641-931e7b51b08c.webp",
 ]
 
 const transformStyles = [

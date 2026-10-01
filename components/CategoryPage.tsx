@@ -1,4 +1,6 @@
 import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 import styled from 'styled-components';
 import ClothingCard from '@/components/ClothingCard';
 import ShoeCard from '@/components/ShoeCard';
@@ -29,6 +31,26 @@ async function CategoryPage({ section }: CategoryPageProps) {
   const meta = collectionMeta[section];
 
   if (!collection) return null;
+
+  // Every photo across the section's products, deduplicated in catalog order.
+  // Guarantees all images from the section appear on its page, not just the
+  // one photo each product card shows.
+  const everyPhoto: { src: string; productId: string; productName: string }[] = [];
+  {
+    const seen = new Set<string>();
+    for (const product of [
+      ...collection.groups.clothing,
+      ...collection.groups.outerwear,
+      ...collection.groups.shoes,
+    ]) {
+      const gallery = product.images && product.images.length > 0 ? product.images : [product.image];
+      for (const src of gallery) {
+        if (seen.has(src)) continue;
+        seen.add(src);
+        everyPhoto.push({ src, productId: product.id, productName: product.name });
+      }
+    }
+  }
 
   return (
     <StyledWrapper>
@@ -74,6 +96,31 @@ async function CategoryPage({ section }: CategoryPageProps) {
                 <ShoeCard key={p.id} product={p} />
               ))}
             </GsapCarousel>
+          </section>
+        </Reveal>
+
+        <Reveal y={18} blur={3} duration={700}>
+          <section className="section">
+            <h2 className="section-title">Complete Collection</h2>
+            <div className="photo-grid">
+              {everyPhoto.map((tile) => (
+                <Link
+                  key={tile.src}
+                  href={`/product/${tile.productId}`}
+                  className="photo-tile"
+                  aria-label={`View ${tile.productName}`}
+                  title={tile.productName}
+                >
+                  <Image
+                    src={tile.src}
+                    alt={tile.productName}
+                    fill
+                    sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 200px"
+                    className="photo-img"
+                  />
+                </Link>
+              ))}
+            </div>
           </section>
         </Reveal>
       </div>
@@ -125,6 +172,48 @@ const StyledWrapper = styled.div`
     font-weight: 700;
     color: oklch(0.15 0.02 98);
     margin-bottom: 1rem;
+  }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .photo-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .photo-grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .photo-grid {
+      grid-template-columns: repeat(8, 1fr);
+    }
+  }
+
+  .photo-tile {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 18px;
+    outline: 1px solid oklch(0.2 0.03 98 / 0.12);
+    transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .photo-tile:hover {
+    transform: translateY(-3px);
+  }
+
+  .photo-img {
+    object-fit: cover;
   }
 `;
 

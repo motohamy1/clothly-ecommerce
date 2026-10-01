@@ -47,6 +47,23 @@ function clampQuantity(quantity: number): number {
   return Math.min(Math.floor(quantity), MAX_QUANTITY_PER_ITEM);
 }
 
+// Old carts persist product snapshots whose image paths predate the site-wide
+// PNG→WebP conversion of public/{men,women,kids}; those .png files no longer
+// exist, so stored lines render broken images. Rewrite the section-scoped
+// paths on hydration. Uploads under /images/products/ can still be .png on
+// disk and must stay untouched.
+function migrateImagePaths(product: Product): Product {
+  const fix = (src: string): string =>
+    /^\/(?:men|women|kids)\/.+\.png$/.test(src) ? `${src.slice(0, -4)}.webp` : src;
+
+  return {
+    ...product,
+    image: fix(product.image),
+    images: product.images?.map(fix),
+    variants: product.variants?.map((v) => (v.image ? { ...v, image: fix(v.image) } : v)),
+  };
+}
+
 // Storage is untrusted input: validate shape before trusting any of it.
 function parseStoredItems(raw: string): CartItem[] {
   let data: unknown;
@@ -80,7 +97,7 @@ function parseStoredItems(raw: string): CartItem[] {
     }
 
     lines.set(key, {
-      product: product as Product,
+      product: migrateImagePaths(product as Product),
       quantity: qty,
       selectedSize: typeof selectedSize === 'string' ? selectedSize : undefined,
       selectedColor: typeof selectedColor === 'string' ? selectedColor : undefined,

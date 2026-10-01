@@ -138,6 +138,31 @@ export default function Navbar({
   const creamText = 'oklch(0.943 0.051 98.2)';
   const cartBadgeGradient = `linear-gradient(to bottom right, ${primary.main}, ${primary.DEFAULT})`;
 
+  const hamburger = (
+    <button
+      onClick={() => setIsMenuOpen(!isMenuOpen)}
+      aria-label="Toggle menu"
+      aria-expanded={isMenuOpen}
+      className="md:hidden relative w-8 h-8 shrink-0 flex flex-col items-center justify-center gap-[5px] rounded-lg hover:bg-black/5 transition-colors duration-200"
+    >
+      <span
+        className={`block w-6 h-[1.5px] origin-center transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
+          ${isMenuOpen ? 'translate-y-[6.5px] rotate-45' : ''}`}
+        style={{ background: textColor }}
+      />
+      <span
+        className={`block w-6 h-[1.5px] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
+          ${isMenuOpen ? 'opacity-0 scale-x-0' : ''}`}
+        style={{ background: textColor }}
+      />
+      <span
+        className={`block w-6 h-[1.5px] origin-center transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
+          ${isMenuOpen ? '-translate-y-[6.5px] -rotate-45' : ''}`}
+        style={{ background: textColor }}
+      />
+    </button>
+  );
+
   const isActive = (href: string) => {
     if (activeCategory) return href === `/shop/${activeCategory}`;
     const hashIndex = href.indexOf('#');
@@ -229,11 +254,11 @@ export default function Navbar({
               </div>
             </div>
 
-            {/* Nav Links pill - centered */}
-            <div className={`justify-self-center bg-transparent backdrop-blur-md rounded-full shadow-[0_8px_32px_rgba(33,33,33,0.35),0_2px_8px_rgba(33,33,33,0.2)] border ${isOverDarkSection ? 'border-white/40' : 'border-black/15'}`}>
+            {/* Nav Links pill - centered on desktop only; mobile shows logo + hamburger */}
+            <div className={`hidden md:block justify-self-center bg-transparent backdrop-blur-md rounded-full shadow-[0_8px_32px_rgba(33,33,33,0.35),0_2px_8px_rgba(33,33,33,0.2)] border ${isOverDarkSection ? 'border-white/40' : 'border-black/15'}`}>
               <div className="flex items-center justify-between h-16 px-4">
                 {/* Desktop links */}
-                <div className="hidden md:flex items-center gap-1 w-full justify-center">
+                <div className="flex items-center gap-1 w-full justify-center">
                   {navLinks.map((link) => {
                     const active = isActive(link.href);
                     return (
@@ -272,34 +297,14 @@ export default function Navbar({
                   })}
                 </div>
 
-                {/* Hamburger → X morph (mobile only) */}
-                <button
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  aria-label="Toggle menu"
-                  aria-expanded={isMenuOpen}
-                  className="md:hidden relative w-8 h-8 flex flex-col items-center justify-center gap-[5px] mx-auto rounded-lg hover:bg-white/10 transition-colors duration-200"
-                >
-                  <span
-                    className={`block w-6 h-[1.5px] origin-center transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
-                      ${isMenuOpen ? 'translate-y-[6.5px] rotate-45' : ''}`}
-                    style={{ background: textColor }}
-                  />
-                  <span
-                    className={`block w-6 h-[1.5px] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
-                      ${isMenuOpen ? 'opacity-0 scale-x-0' : ''}`}
-                    style={{ background: textColor }}
-                  />
-                  <span
-                    className={`block w-6 h-[1.5px] origin-center transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
-                      ${isMenuOpen ? '-translate-y-[6.5px] -rotate-45' : ''}`}
-                    style={{ background: textColor }}
-                  />
-                </button>
+                {/* Mobile has no links here — the hamburger lives on the right now */}
               </div>
             </div>
 
-            {/* Icons */}
-            <div className="hidden md:flex items-center gap-3 justify-self-end">
+            {/* Icons (desktop) + hamburger (mobile, pinned to the right edge) */}
+            <div className="flex items-center gap-3 justify-self-end">
+              {hamburger}
+              <div className="hidden md:flex items-center gap-3">
               <div className={`group/search flex items-center h-16 rounded-full bg-transparent backdrop-blur-md shadow-[0_25px_40px_rgba(33,33,33,0.25)] transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] overflow-hidden ${isOverDarkSection ? 'border border-white/30' : 'border border-background/30'} w-14 hover:w-72 focus-within:w-72`}>
                 <button
                   className="shrink-0 h-16 w-14 flex items-center justify-center rounded-full transition-colors duration-300 hover:bg-white/10"
@@ -351,6 +356,7 @@ export default function Navbar({
                   {/* Account menu */}
                   <UserMenu iconColor={textColor} />
                 </div>
+              </div>
               </div>
             </div>
           </div>

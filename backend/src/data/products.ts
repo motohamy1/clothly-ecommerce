@@ -78,7 +78,7 @@ const kidsShoeImgs = [
   '/kids/kids-shoes/6b3fa291-9b75-4e6f-8911-7a8afa9c80d3.png',
   '/kids/kids-shoes/7a59d1d4-2791-4e8a-9647-30c8e71c2c32.png',
   '/kids/kids-shoes/a2af3786-0285-403f-b4dd-dabb61b64428.png',
-  '/kids/kids-shoes/a4726498-e0f8-4796-9139-e0554a58ac8f8.png',
+  '/kids/kids-shoes/a4726498-e0f8-4796-9139-e0554a58ac8f.png',
   '/kids/kids-shoes/d16ca6b5-3379-4730-bcff-ca88ac789948.png',
 ];
 
@@ -89,13 +89,12 @@ const variants: ProductVariant[] = [
   { colorName: 'Olive', colorValue: 'oklch(0.42 0.08 130)' },
 ];
 
-function gallery(img: string, pool: string[], count = 3): string[] {
-  const idx = pool.indexOf(img);
-  const result: string[] = [];
-  for (let i = 0; i < count; i++) {
-    result.push(pool[(idx + i) % pool.length]);
-  }
-  return result;
+function gallery(img: string, pool: string[]): string[] {
+  // Rotate the full pool so every image in the section folder appears on the
+  // site, with the product's primary photo first. A fixed 3-image window left
+  // pool entries beyond the first few products unreachable.
+  const idx = Math.max(0, pool.indexOf(img));
+  return [...pool.slice(idx), ...pool.slice(0, idx)];
 }
 
 function product(input: {

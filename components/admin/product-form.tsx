@@ -1,8 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { useForm, useFieldArray, type Control, type FieldArray, type UseFieldArrayReturn } from 'react-hook-form';
+import { useForm, useFieldArray, type Control, type FieldValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { X } from 'lucide-react';
@@ -77,11 +76,26 @@ export default function ProductForm({ initial, mode }: ProductFormProps) {
     },
   });
 
-  // @ts-expect-error react-hook-form v7.83 inference quirk
-  const images = useFieldArray({ control, name: 'images' });
-  // @ts-expect-error react-hook-form v7.83 inference quirk
-  const sizes = useFieldArray({ control, name: 'sizes' });
-  const variants = useFieldArray({ control, name: 'variants' });
+  // rhf 7.83's `useFieldArray` path types resolve to '"variants"' for this form —
+  // array-of-primitive fields (`images`, `sizes`) get a `never` path due to the
+  // Primitive exclusion in rhf's eager ArrayPathImpl. Under `FieldValues`
+  // (Record<string, any>) the array-paths widen to `string`, so `FVWidened`
+  // keeps the hook's methods usable on every field array name.
+  type FVWidened = ProductFormValues & FieldValues;
+  const images = useFieldArray<FVWidened, 'images'>({ control: control as Control<FVWidened>, name: 'images' });
+  const sizes = useFieldArray<FVWidened, 'sizes'>({ control: control as Control<FVWidened>, name: 'sizes' });
+  const variants = useFieldArray<ProductFormValues, 'variants'>({ control, name: 'variants' });
+  const primaryImage = watch('image');
+
+  const handleUploadedImage = (path: string) => {
+    // An uploaded image should become the product's primary photo unless one
+    // is already set; otherwise it lands in the gallery.
+    if (primaryImage.trim().length > 0) {
+      images.append(path);
+    } else {
+      setValue('image', path, { shouldValidate: true, shouldDirty: true });
+    }
+  };
 
   const onSubmit = async (values: ProductFormValues) => {
     const url = initial
@@ -202,11 +216,28 @@ export default function ProductForm({ initial, mode }: ProductFormProps) {
         <TabsContent value="images" className="mt-6 space-y-6">
           <div className="space-y-1.5">
             <Label className="text-[13px] font-medium">Primary image URL</Label>
-            <Input {...register('image')} placeholder="/images/products/my-image.jpg" />
+            <Input {...register('image')} placeholder="/images/products/my-image.jpg or https://…" />
             {errors.image && <p className="text-[13px] text-[#8B2E1F]">{errors.image.message}</p>}
+            {primaryImage.trim().length > 0 && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={primaryImage}
+                alt=""
+                className="mt-2 h-32 w-full rounded-lg border border-[rgba(26,24,20,0.08)] bg-[rgba(26,24,20,0.03)] object-contain"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+                onLoad={(e) => {
+                  e.currentTarget.style.display = '';
+                }}
+              />
+            )}
           </div>
 
-          <ImageDropzone onUploaded={(path) => images.append(path as any)} />
+          <ImageDropzone onUploaded={handleUploadedImage} />
+          <p className="text-[13px] text-[rgba(26,24,20,0.6)]">
+            Uploaded images are saved at <span className="font-mono">/images/products/…</span>.
+          </p>
 
           {images.fields.length > 0 && (
             <div className="space-y-3">
@@ -214,13 +245,11 @@ export default function ProductForm({ initial, mode }: ProductFormProps) {
               {images.fields.map((field, index) => (
                 <div key={field.id} className="flex items-center gap-3">
                   {watch(`images.${index}`) && (
-                    <Image
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
                       src={watch(`images.${index}`)}
                       alt=""
-                      width={64}
-                      height={64}
-                      sizes="64px"
-                      className="object-cover rounded"
+                      className="h-16 w-16 rounded bg-[rgba(26,24,20,0.04)] object-cover"
                     />
                   )}
                   <Input value={watch(`images.${index}`)} readOnly className="flex-1" />
@@ -239,7 +268,7 @@ export default function ProductForm({ initial, mode }: ProductFormProps) {
 
           <button
             type="button"
-            onClick={() => images.append('' as any)}
+            onClick={() => images.append('')}
             className="text-[#B8763A] text-[14px] font-medium"
           >
             + Add another image
@@ -263,7 +292,7 @@ export default function ProductForm({ initial, mode }: ProductFormProps) {
 
           <button
             type="button"
-            onClick={() => sizes.append('' as any)}
+            onClick={() => sizes.append('')}
             className="text-[#B8763A] text-[14px] font-medium"
           >
             + Add a size

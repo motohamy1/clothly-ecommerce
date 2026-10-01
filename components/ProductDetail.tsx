@@ -157,16 +157,16 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             {/* ── Rail: photo gallery thumbnails ── */}
             <motion.div
               variants={itemVariants}
-              className="order-2 flex shrink-0 flex-row gap-3 overflow-x-auto lg:order-1 lg:h-full lg:w-[68px] lg:flex-col lg:overflow-visible xl:w-[88px] 2xl:w-[96px]"
+              className="order-2 flex shrink-0 flex-row gap-3 overflow-x-auto lg:order-1 lg:h-full lg:w-[68px] lg:flex-col lg:overflow-y-auto xl:w-[88px] 2xl:w-[96px]"
             >
-              {galleryImages.slice(0, 3).map((src, i) => (
+              {galleryImages.map((src, i) => (
                 <button
-                  key={i}
+                  key={src}
                   type="button"
                   onClick={() => setActiveImageIndex(i)}
                   aria-label={`View photo ${i + 1}`}
                   aria-pressed={activeImageIndex === i}
-                  className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl transition-transform duration-300 active:scale-[0.96] lg:h-auto lg:w-full ${
+                  className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl transition-transform duration-300 active:scale-[0.96] lg:h-auto lg:min-h-20 lg:w-full ${
                     i === 0 ? 'lg:grow-[2]' : 'lg:grow'
                   }`}
                   style={{
